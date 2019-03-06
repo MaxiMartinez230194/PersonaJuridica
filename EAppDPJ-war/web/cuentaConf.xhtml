@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <ui:composition template="./layout.xhtml">  
+        <ui:define name="content">
+            <h:form id="formCuenta" title=" ">
+
+                <ace:panel id="cuentaPanel" header="#{msg.confCuenta}">
+                    <h:panelGrid  columns="4" class="panel-buttons">
+                        <span class="glyphicon-chico glyphicon-refresh"></span>
+                        <h:panelGroup >
+                            <ace:linkButton action="cuentaConf" actionListener="#{cuentaManagedBean.actualizar}" value="#{msg.confCuenta}"/>
+                        </h:panelGroup>
+                        <span class="glyphicon-chico glyphicon-plus"></span>
+                        <h:panelGroup rendered="#{cuentaManagedBean.alta}">
+                            <ace:linkButton action="nuevaCuenta" value="#{msg.newCuenta}"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                    <ace:panel id="cuentaPanelBusqueda" header="#{msg.busqueda}" toggleable="true" closeSpeed="2000" class="panel-buttons" collapsed="true">
+
+                        <table cellspacing="10" class="panel-buttons">
+                            <tr>
+                                <td align="right">                                
+                                    <h:outputLabel value="#{msg.denominacion}"/>
+                                </td>
+                                <td align="left">
+                                    <ace:textEntry value="#{cuentaManagedBean.nombreBuscar}"/>
+                                </td>
+                            </tr>
+
+                        </table>
+                        <div align="right" >
+                            <h:panelGrid  columns="2">
+                                <ace:pushButton value="#{msg.find}"  actionListener="#{cuentaManagedBean.aplicarFiltro}" />
+                                <ace:pushButton value="#{msg.actualizar}"   actionListener="#{cuentaManagedBean.actualizar}"/>
+                            </h:panelGrid>
+                        </div>
+
+                    </ace:panel>
+
+                    <ace:dataTable id="list" value="#{cuentaManagedBean.listElements}" var="item" paginator="true" paginatorPosition="bottom" rows="10" class="panel-buttons">
+
+                        <ace:column id="id" headerText="#{msg.idT}" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellId" value="#{item.id}"/>
+                            </center>
+                        </ace:column>
+
+                        <ace:column id="nroCuenta" headerText="NRO. CUENTA">
+                            <center>
+                                <h:outputText id="cellNroCuenta" value="#{item.nro}"/>
+                            </center>                           
+                        </ace:column>
+                        
+                        <ace:column id="nroCorre" headerText="#{msg.denominacionT}">
+                            <center>
+                                <h:outputText id="cellNroCorre" value="#{item.denominacion}"/>
+                            </center>                           
+                        </ace:column>
+
+
+                        <ace:column id="accion" headerText="#{msg.actionT}" style="width: 15%">
+                            <h:panelGrid  columns="3"> 
+
+                                <ace:pushButton id="detalle"  action="detalleCuenta" actionListener="#{cuentaManagedBean.verDetalle}" rendered="#{cuentaManagedBean.detalle}">
+                                    <span class="glyphicon glyphicon-zoom-in"></span>                             
+                                    <f:param name="id" value="#{item.id}"/>
+                                </ace:pushButton>
+                                
+                                <ace:pushButton id="editar"  action="editarCuenta" actionListener="#{cuentaManagedBean.prepararParaEditar()}" rendered="#{cuentaManagedBean.modificacion}">
+                                    <span class="glyphicon glyphicon-pencil"></span> 
+                                    <f:param name="id" value="#{item.id}"/>
+                                </ace:pushButton>
+
+                                <ace:pushButton id="eliminar" rendered="#{cuentaManagedBean.baja}" p:onclick="ice.ace.instance('#{confirmDialogEntidad.clientId}').show();return false;">
+                                    <span class="glyphicon glyphicon-trash"></span> 
+                                </ace:pushButton>
+
+                                <ace:confirmationDialog id="confirmDialogAccion" binding="#{confirmDialogAccion}"
+                                                        message="${msg.msgDelete}"
+                                                        header="${msg.confirm}"
+                                                        modal="true"
+                                                        width="300"
+                                                        height="155"
+                                                        position="center">
+                                    <h:panelGrid columns="2" class="panel-confirm-buttons">
+                                        <ace:pushButton id="yes" value="${msg.acep}" p:onclick="ice.ace.instance('#{confirmDialogAccion.clientId}').hide();" actionListener="#{accionManagedBean.guardarBorrado()}">
+                                            <f:param name="id" value="#{item.id}" />
+                                            <f:ajax execute="@this" render="@all"/>
+                                        </ace:pushButton>
+                                        <ace:pushButton id="no" value="${msg.cancel}" p:onclick="ice.ace.instance('#{confirmDialogAccion.clientId}').hide();">
+                                            <f:ajax execute="@this" render="@all"/>
+                                        </ace:pushButton>
+                                    </h:panelGrid>
+                                </ace:confirmationDialog>
+
+                            </h:panelGrid>
+                        </ace:column>          
+                    </ace:dataTable>
+
+                </ace:panel>
+            </h:form>
+        </ui:define>    
+    </ui:composition> 
+</html>
+

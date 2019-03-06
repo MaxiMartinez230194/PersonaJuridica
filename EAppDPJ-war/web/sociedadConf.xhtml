@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+    <ui:composition template="./layout.xhtml">  
+        <ui:define name="content">
+            <h:form id="formSociedad" title=" ">
+                <ace:panel header="Sociedades">
+                    <h:panelGrid  columns="4" class="panel-buttons">
+                        <span class="glyphicon-chico glyphicon-refresh"></span>
+                        <h:panelGroup >
+                            <ace:linkButton action="sociedadConf" actionListener="#{sociedadManagedBean.actualizar}" value="Sociedades Info"/>
+                            |
+                        </h:panelGroup>
+                        <span class="glyphicon-chico glyphicon-plus"></span>
+                        <h:panelGroup rendered="#{sociedadManagedBean.alta}">
+                            <ace:linkButton action="nuevaSociedad" value="Nueva Sociedad"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                    <ace:panel id="sociedadPanelBusqueda" header="#{msg.busqueda}" collapsed="true" toggleable="true" toggleSpeed="200" class="panel-buttons">
+                        <table cellspacing="10">
+                            <tr>
+                                <td align="right">                                
+                                     <h:outputLabel value="#{msg.name}" />
+                                </td>
+                                <td align="left">
+                                    <ace:textEntry value="#{sociedadManagedBean.nombreBuscar}" style="width: 100%"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">                                
+                                     <h:outputLabel value="Código Sociedad:" />
+                                </td>
+                                <td align="left">
+                                    <ace:textEntry value="#{sociedadManagedBean.codigoBuscar}" style="width: 100%"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">                                
+                                     <h:outputLabel value="Municipio: "/>
+                                </td>
+                                <td align="left">
+                                    <ace:simpleSelectOneMenu value="#{sociedadManagedBean.idMunicipioBuscar}" style="width: 100%" >
+                                        <f:selectItem itemValue="0" itemLabel="NINGUNO" noSelectionOption="true"/>
+                                        <f:selectItems value="#{sociedadManagedBean.selectItemsMunicipio}" />
+                                    </ace:simpleSelectOneMenu>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">                                
+                                     <h:outputLabel value="#{msg.estado}"/>
+                                </td>
+                                <td align="left">
+                                    <ace:simpleSelectOneMenu value="#{sociedadManagedBean.idEstadoBuscar}"  style="width: 100%">
+                                        <f:selectItem itemValue="0" itemLabel="NINGUNO" noSelectionOption="true"/>
+                                        <f:selectItems value="#{sociedadManagedBean.selectItemsEstado}" />
+                                    </ace:simpleSelectOneMenu>
+                                </td>
+                            </tr>
+                        </table>
+                        <div align="right" >
+                            <h:panelGrid  columns="2">
+                                <ace:pushButton value="#{msg.find}"  actionListener="#{sociedadManagedBean.aplicarFiltro}" />
+                                <ace:pushButton value="#{msg.actualizar}"   actionListener="#{sociedadManagedBean.actualizar}"/>
+                            </h:panelGrid>
+                        </div>
+                    </ace:panel>
+
+                    <ace:dataTable id="list" value="#{sociedadManagedBean.listElements}" var="item" rows="10" paginator="true" paginatorPosition="bottom"  style="margin-top: 10px;">
+
+                        <ace:column id="codigo" headerText="CÓDIGO" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellCodigo" value="#{item.codigo}"/>
+                            </center>
+                        </ace:column>
+
+                        <ace:column id="nombre" headerText="NOMBRE" >
+                                <h:outputText id="cellNombre" value="#{item.nombre}"/>
+                        </ace:column>
+
+                        <ace:column id="fechaAlta" headerText="FECHA ALTA" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellFechaAlta" value="#{item.fechaAlta}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                                </h:outputText>
+                            </center>
+                        </ace:column>
+
+                        <ace:column id="estado" headerText="ESTADO" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellEstado" value="#{item.estadoEntidad.leyenda}"/>
+                            </center>
+                        </ace:column>
+                        
+                        <ace:column id="nombrePropietario" headerText="NOMBRE PROPIETARIO" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellnombrePropietario" value="#{item.nombreReserva}"/>
+                            </center>
+                        </ace:column>
+                        
+                        <ace:column id="dni" headerText="DNI" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellDni" value="#{item.dni}"/>
+                            </center>
+                        </ace:column>
+                        
+                        <ace:column id="conf" headerText="DIAS DE RESERVA" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellconf" rendered="#{item.estadoEntidad.leyenda == 'RESERVADO'}" value="#{item.configuracion.totalDiasReserva}"/>
+                            </center>
+                        </ace:column>
+                        
+                        <ace:column id="fechaActual" headerText="FECHA ACTUAL" style="width: 7%"  >
+                            <center>
+                                <h:outputText id="cellFechaActual" value="#{sociedadManagedBean.getFechaActual()}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                                </h:outputText>
+                            </center>
+                        </ace:column>
+                        
+                        <ace:column id="fechaVencimiento" headerText="FECHA VENCIMIENTO" style="width: 7%"  >
+                            <center>
+                                <h:outputText id="cellFechaVencimiento" rendered="#{item.estadoEntidad.leyenda == 'RESERVADO'}" value="#{sociedadManagedBean.getFechaVencimiento(item.fechaAlta)}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                                </h:outputText>
+                            </center>
+                        </ace:column>
+                        
+                        
+                        
+                        <ace:column id="vencida" headerText="VENCIMIENTO" style="width: 7%"  >
+                            <center>
+                                <span  class="#{sociedadManagedBean.isEntidadVencida(sociedadManagedBean.getFechaVencimiento(item.fechaAlta))?'glyphicon glyphicon-ok':'glyphicon glyphicon-remove'}" style="color:#{sociedadManagedBean.isEntidadVencida(sociedadManagedBean.getFechaVencimiento(item.fechaAlta))?'green':'red'};display: #{item.estadoEntidad.leyenda == 'ACTIVO'?'none':''}" />
+                            </center>
+                        </ace:column>
+
+                        <ace:column id="acciones" headerText="#{msg.actionT}" style="width: 3%">
+                            <h:panelGrid  columns="3"> 
+
+                                <ace:pushButton id="detalle"  action="detalleSociedad" actionListener="#{sociedadManagedBean.verDetalle}" rendered="#{sociedadManagedBean.detalle}">
+                                    <span class="glyphicon glyphicon-zoom-in"></span>                             
+                                    <f:param name="id" value="#{item.id}"/>
+                                </ace:pushButton>
+
+                                <ace:pushButton id="editar"  action="editarSociedad" actionListener="#{sociedadManagedBean.prepararParaEditar()}" rendered="#{sociedadManagedBean.modificacion}">
+                                    <span class="glyphicon glyphicon-pencil"></span> 
+                                    <f:param name="id" value="#{item.id}"/>
+                                </ace:pushButton>
+
+                                <ace:pushButton id="eliminar" rendered="#{sociedadManagedBean.baja}" p:onclick="ice.ace.instance('#{confirmDialogSociedad.clientId}').show();return false;">
+                                    <span class="glyphicon glyphicon-trash"></span> 
+                                </ace:pushButton>
+
+                                <ace:confirmationDialog id="confirmDialogSociedad" binding="#{confirmDialogSociedad}"
+                                                        message="${msg.msgDelete}"
+                                                        header="${msg.confirm}"
+                                                        modal="true"
+                                                        width="300"
+                                                        height="155"
+                                                        position="center">
+                                    <h:panelGrid columns="2" class="panel-confirm-buttons">
+                                        <ace:pushButton id="yes" value="${msg.acep}" p:onclick="ice.ace.instance('#{confirmDialogSociedad.clientId}').hide();" actionListener="#{sociedadManagedBean.guardarBorrado()}">
+                                            <f:param name="id" value="#{item.id}" />
+                                            <f:ajax execute="@this" render="@all"/>
+                                        </ace:pushButton>
+                                        <ace:pushButton id="no" value="${msg.cancel}" p:onclick="ice.ace.instance('#{confirmDialogSociedad.clientId}').hide();">
+                                            <f:ajax execute="@this" render="@all"/>
+                                        </ace:pushButton>
+                                    </h:panelGrid>
+                                </ace:confirmationDialog>
+
+                            </h:panelGrid>
+                        </ace:column>          
+                    </ace:dataTable>
+
+
+                </ace:panel>
+            </h:form>
+        </ui:define>    
+    </ui:composition> 
+</html>

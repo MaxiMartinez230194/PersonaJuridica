@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleBoleta" styleClass="form" title=" ">
+
+                <ace:panel header="#{msg.detailsParteDiario}" >
+
+
+                    <table border="0" cellspacing="5">
+                        <tr>
+                            <td align="right">
+                                <strong>
+                                    <h:outputLabel value="#{msg.id}"/>
+                                </strong>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{parteDiarioManagedBean.parteDiario.id}"/>                     
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <strong>
+                                    <h:outputLabel value="Archivo:"/>
+                                </strong>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{parteDiarioManagedBean.parteDiario.url}" />
+                            </td>
+                        </tr>
+                        
+                     </table>
+                    
+                    <br/>
+                    <br/>
+                    
+                    <div style="float: left;margin-top: 20px">
+                                <strong>
+                                    <h:outputText value="Total Boletas Afectadas: #{parteDiarioManagedBean.listparteDiario.size()}" />
+                                </strong>
+                    </div>
+                           
+                    <ace:dataTable id="list" value="#{parteDiarioManagedBean.listparteDiario}" var="item" paginator="true" paginatorPosition="bottom" rows="10" class="panel-buttons">
+
+                        <ace:column id="id" headerText="#{msg.idT}" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellId" value="#{item.id}"/>
+                            </center>
+                        </ace:column>
+
+                        <ace:column id="nroCorre" headerText="Archivo">
+                            <center>
+                                <h:outputText id="cellNroCorre" value="#{item.nroCorrelativo}"/>
+                            </center>                           
+                        </ace:column>
+
+                        <ace:column id="fechaEmision" headerText="#{msg.fecEmisionT}">
+                            <center>
+                                <h:outputText id="cellFechaEmision" value="#{item.fechaEmision}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/>
+                                </h:outputText>
+                            </center>                           
+                        </ace:column>
+
+                        <ace:column id="fechaPago" headerText="#{msg.fecPagoT}">
+                            <center>
+                                <h:outputText id="cellFechaPago" value="#{item.fechaPago}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/>
+                                </h:outputText>
+                            </center>                             
+                        </ace:column>
+                        
+                        <ace:column id="total" headerText="Total">
+                            <center>
+                                <h:outputText id="celltotal" value="#{item.total}"/>
+                            </center>                           
+                        </ace:column>
+
+                        <ace:column id="estado" headerText="#{msg.estadoT}">
+                            <div class="panel-column-data-left">
+                                <h:outputText id="cellEstado" value="#{item.estadoBoleta.nombre}"/>
+                            </div>                            
+                        </ace:column>
+
+                                 
+                    </ace:dataTable>
+                    
+                    
+                    
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="parteDiarioConf" value="- Volver -" />
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

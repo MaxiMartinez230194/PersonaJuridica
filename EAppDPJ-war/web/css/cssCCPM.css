@@ -1,0 +1,123 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 15/06/2016, 17:44:15
+    Author     : Alvarenga Angel
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans');
+
+body {
+    font-family: "Noto Sans";
+    font-size: 1em;
+    color: #666666;    
+}
+
+.banner-top {
+    font-family: "Noto Sans";    
+    letter-spacing: 0;
+    padding-bottom: 10px;
+    padding-top: 10px;    
+    padding-right: 10px;
+    padding-left: 10px;
+    right: 0;
+    top: 0;
+    z-index: 99; 
+    background: url("../images/logoDPJ.png") no-repeat; 
+    height: 50px;
+}
+
+.content-top{
+    font-family: "Noto Sans";  
+    text-align : center;
+    height: auto;
+    padding-left: 0.5%;
+    padding-right: 0.5%;
+    padding-bottom: 0.5%;
+    padding-top: 0.5%;
+    border-top: 0.5px solid #737578;
+}
+
+.footer-top {
+    font-family: "Noto Sans";    
+    letter-spacing: 0;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-right: 10px;
+    font-size: 10px;
+    text-align: right;
+}
+
+.globalNav {
+    font-family: "Noto Sans";  
+    font-size : 11px;
+    text-align : justify;
+    height : auto;      
+    padding-left: 10px;
+    padding-right: 5px; 
+    border-bottom: 1px solid #737578;
+    
+}
+
+.content{
+    font-family: "Noto Sans";  
+    font-size : 11px;
+    text-align : justify;
+    height: auto;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-bottom: 25px;
+    padding-top: 20px;
+}
+
+.img-circle {
+  border-radius: 50%;
+}
+
+.panel-buttons{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.panel-message{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.panel-column-data-left{
+    text-align: left;
+} 
+
+.panel-confirm-buttons{
+    text-align: center;
+} 
+
+.boton {
+	border: 1px solid #0088cc !important;
+	background: #00aaee !important;
+	font-weight: bold;
+	color: #FFFFFF !important;
+        padding: 5px;
+}
+
+.boton .ui-state-hover,
+.boton .ui-state-focus{
+	border: 1px solid #00aaee !important;
+	background: #07BAFF !important;
+	font-weight: bold;
+	color: #FFFFFF !important;
+}
+
+.buttonLogin{
+    border: 1px solid #0088cc !important;
+    background: #00aaee !important;
+    font-weight: bold;
+    width: 150px;
+    height: 25px; 
+    color: #FFFFFF !important;
+}
+

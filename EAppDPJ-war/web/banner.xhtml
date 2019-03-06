@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">    
+    <ui:composition>
+        <div align="right">
+            <h:form title=" ">
+                <span class="glyphicon-chico glyphicon-user" style="color: #00aaee"></span>
+                <h:outputText value=" #{webManagedBean.usuario.apellido}, #{webManagedBean.usuario.nombre}" style="margin-right:0.5%"/>
+                <h:outputText value="|"/>
+                <span class="glyphicon-chico glyphicon-cog" style="color: #00aaee"></span>
+                <ace:linkButton action="configuracionConf" actionListener="#{usuarioManagedBean.prepararParaEditarContrasena}" immediate="true" value="Usuario/Contraseña" style="margin-right:0.5%"/>
+                <h:outputText value="|"/>
+                <span class="glyphicon-chico glyphicon-log-out" style="color: #00aaee"></span>
+                <ace:linkButton action="index" immediate="true" value="Salir" actionListener="#{webManagedBean.logout}"/>
+            </h:form>
+        </div>
+    </ui:composition>
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleTipoEntidad" styleClass="form" title=" ">
+
+                <ace:panel header="Detalle Tipo Entidad">                
+                    <table border="0" cellspacing="5">
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.id}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{tipoEntidadManagedBean.id}"/>                     
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Leyenda: "/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{tipoEntidadManagedBean.leyenda}"/>
+                            </td>
+                        </tr>                    
+                    </table>
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="tipoEntidadConf" value="- Volver -" />
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

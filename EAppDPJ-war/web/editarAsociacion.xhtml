@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">      
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formEditarAsociacion" title=" ">
+                <ace:panel id="editarAsociacion" header="Editar Asociación">
+                    <table border="0" cellspacing="5" class="panel-buttons">
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) #{msg.name}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="nombre" label="nombre" value="#{asociacionManagedBean.nombre}" required="true" style="width: 100%" >
+                                    <ace:ajax render="@this nombre nombreMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="nombreMsg" for="nombre" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) #{msg.codigo}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="codigo" label="codigo" value="#{asociacionManagedBean.codigo}" required="true" style="width: 100%" >
+                                    <ace:ajax render="@this codigo codigoMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="codigoMsg" for="codigo" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr> 
+                        
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Nombre y Apellido del Propietario" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="nombreReserva" label="nombreReserva" value="#{asociacionManagedBean.nombreReserva}" required="true" style="width: 100%">
+                                    <ace:ajax render="@this nombreReserva nombreReservaMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="nombreReservaMsg" for="nombreReserva" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr>
+                         <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) DNI del Propietario" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="dni" label="dni" value="#{asociacionManagedBean.dni}" required="true" style="width: 100%">
+                                    <ace:ajax render="@this dni dniMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="dniMsg" for="dni" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.correo}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="correo" label="correo" value="#{asociacionManagedBean.correo}"  type="email" style="width: 100%" >
+                                    <ace:ajax render="@this correo correoMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="correoMsg" for="correo" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.telefono}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="telefono" label="telefono" value="#{asociacionManagedBean.telefono}"  style="width: 100%"  >
+                                    <ace:ajax render="@this telefono telefonoMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="telefonoMsg" for="telefono" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.paginaWeb}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="paginaWeb" label="paginaWeb" value="#{asociacionManagedBean.paginaWeb}" style="width: 100%"  >
+                                    <ace:ajax render="@this paginaWeb paginaWebMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="paginaWebMsg" for="paginaWeb" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Dirección: " />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="direccion" label="direccion" value="#{asociacionManagedBean.direccion}" required="true" style="width: 100%" >
+                                    <ace:ajax render="@this direccion direccionMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="direccionMsg" for="direccion" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Municipio: " />
+                            </td>
+                            <td align="left">
+                                <ace:simpleSelectOneMenu id="selectMunicipioNew" value="#{asociacionManagedBean.idMunicipio}" label="municipio"  required="true" style="width: 100%" >
+                                    <f:selectItem  itemValue="0"  itemLabel="NINGUNO" noSelectionOption="true"/>
+                                    <f:selectItems value="#{asociacionManagedBean.selectItemsMunicipio}" /> 
+                                    <ace:ajax render="@this selectMunicipioNew selectMunicipioNewMsg" event="blur"/> 
+                                </ace:simpleSelectOneMenu>  
+                            </td>
+                            <td align="left">
+                                <ace:message id="selectMunicipioNewMsg" for="selectMunicipioNew" initEffect="slide" changeEffect="shake"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Estado: " />
+                            </td>
+                            <td align="left">
+                                <ace:simpleSelectOneMenu id="selectEstadoNew" value="#{asociacionManagedBean.idEstado}" label="estado"  required="true" style="width: 100%" >
+                                    <f:selectItem  itemValue="0"  itemLabel="NINGUNO" noSelectionOption="true"/>
+                                    <f:selectItems value="#{asociacionManagedBean.selectItemsEstado}" /> 
+                                    <ace:ajax render="@this selectEstadoNew selectEstadoNewMsg" event="blur"/> 
+                                </ace:simpleSelectOneMenu>  
+                            </td>
+                            <td align="left">
+                                <ace:message id="selectEstadoNewMsg" for="selectEstadoNew" initEffect="slide" changeEffect="shake"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">                                
+                                <h:outputLabel value="Fecha de Alta: "/>
+                            </td>
+                            <td align="left">     
+                                <ace:dateTimeEntry id="fecha"
+                                                   value="#{asociacionManagedBean.fechaAlta}"
+                                                   timeZone="America//Argentina/Buenos_Aires"
+                                                   pattern="dd/MM/yyyy"
+                                                   locale="es_AR"
+                                                   renderAsPopup="true"
+                                                   label="Elegir fecha.."
+                                                   labelPosition="inField"
+                                                   size="30"
+                                                   style="width: 100%" 
+                                                   required="true"/>
+                            </td>
+                            <td align="left">
+                                <ace:message id="fechaMsg" for="fecha" initEffect="slide" changeEffect="shake"/>
+                            </td>
+                        </tr>
+
+                    </table>                     
+
+                    <h:inputHidden value="#{asociacionManagedBean.id}" />
+
+                    <h:panelGrid id="buttonGrid" columns="2" class="panel-buttons">
+                        <ace:pushButton id="save" value="#{msg.saveEdit}" action="#{asociacionManagedBean.guardarEdicion}"/>                        
+                        <ace:pushButton id="cancel" value="#{msg.cancel}" action="asociacionConf" immediate="true" actionListener="#{asociacionManagedBean.limpiar()}"/>
+                    </h:panelGrid>
+                </ace:panel>                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

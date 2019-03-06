@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">      
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formNuevaParteDiario" title=" ">
+                <ace:panel id="nuevaParteDiario" header="#{msg.newParteDiario}">
+                    <table border="0" cellspacing="5" class="panel-buttons">
+                       
+                         <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Fecha" />
+                            </td>
+                            <td align="left">
+                                <ace:maskedEntry id="fechaParteDiario" value="#{parteDiarioManagedBean.fechaParteDiario}" mask="99/99/9999" required="true" size="45">
+                                    <ace:ajax render="@this fechaParteDiario fechaParteDiarioMsg" event="blur"/>
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                                </ace:maskedEntry>
+                            </td>
+                            <td align="left">
+                                <ace:message id="fechaParteDiarioMsg" for="fechaParteDiario" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr>
+                        
+                        
+                        
+                        
+                         <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Archivo Adjunto" />
+                            </td>
+                            <td align="left">
+                                <ace:fileEntry  id="adjunto" absolutePath="/home/DatosDPJ" label="Archivo"
+                                    fileEntryListener="#{parteDiarioManagedBean.customValidator}"  
+                                    useOriginalFilename="true"
+                                    useSessionSubdir="false"
+                                    autoUpload="false"
+                                    multiple="false"
+                                    class="inferior">
+                                    <h:commandButton id="submitBtn" type="submit" value="Enviar Archivo" actionListener="#{parteDiarioManagedBean.mostrarInfo()}">
+                                        <f:actionListener binding="#{parteDiarioManagedBean.mostrarInfo()}"/>
+                                    </h:commandButton>    
+                                    </ace:fileEntry>
+                                    <h:inputText value="#{parteDiarioManagedBean.adjunto}"/> <!-- Esto para que guarde el nombre del adjunto en la bd -->
+                                        
+                                    
+                            </td>
+                            
+                        </tr>
+                        
+                       
+                        
+                        
+                       
+                        
+                        
+                        
+                    </table>                  
+                    
+                    <h:panelGrid id="buttonGrid" columns="4" class="panel-buttons">
+                        
+                        <ace:pushButton id="save" value="#{msg.save}" action="#{parteDiarioManagedBean.crear()}"/>
+                        <ace:pushButton id="saveCreate" value="#{msg.saveCreate}" action="#{parteDiarioManagedBean.crearOtro()}"/>
+                        <ace:pushButton id="cancel" value="#{msg.cancel}" action="parteDiarioConf" immediate="true" actionListener="#{parteDiarioManagedBean.limpiar()}"/>
+                    </h:panelGrid>
+                </ace:panel>                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

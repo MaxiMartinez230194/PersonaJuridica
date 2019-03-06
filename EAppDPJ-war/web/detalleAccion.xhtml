@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleAccion" styleClass="form" title=" ">
+
+                <ace:panel header="#{msg.detailsAction}">
+
+                    <table border="0" cellspacing="5">
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.id}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{accionManagedBean.id}" />                     
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.name}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{accionManagedBean.nombre}" />
+                            </td>
+                        </tr>
+                    </table>
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="accionConf" value="- Volver -" />
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+
