@@ -100,8 +100,8 @@ public class MailThread extends Thread {
     }
 
     public void enviarMail(boolean enviar, String correoDest, String asunto, String textoMensaje, String pathArchivo) throws Exception {
-        String correoEmisor = "juegosdeportivosmisioneros@gmail.com";
-        String pass = "deportivos2018";
+        String correoEmisor = "maximartinez2394@gmail.com";
+        String pass = "maxi123-";
         try {
 
             if (enviar) {
