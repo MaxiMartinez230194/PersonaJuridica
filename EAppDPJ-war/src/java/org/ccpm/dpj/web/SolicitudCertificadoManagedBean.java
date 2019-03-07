@@ -1,0 +1,359 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.ccpm.dpj.web;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+import org.ccpm.dpj.entity.ActionItem;
+import org.ccpm.dpj.entity.Boleta;
+import org.ccpm.dpj.entity.Entidad;
+import org.ccpm.dpj.entity.EstadoCertificado;
+import org.ccpm.dpj.entity.SolicitudCertificado;
+import org.ccpm.dpj.entity.Grupo;
+import org.ccpm.dpj.entity.Usuario;
+import org.ccpm.dpj.facade.BoletaFacadeLocal;
+import org.ccpm.dpj.facade.EntidadFacadeLocal;
+import org.ccpm.dpj.facade.SolicitudCertificadoFacadeLocal;
+import org.ccpm.dpj.utilidad.MailThread;
+
+@ManagedBean
+@SessionScoped
+public class SolicitudCertificadoManagedBean extends UtilManagedBean implements Serializable {
+
+    @EJB
+    private SolicitudCertificadoFacadeLocal solicitudCertificadoFacade;
+    @EJB
+    private BoletaFacadeLocal boletaFacade;
+    @EJB
+    private EntidadFacadeLocal entidadFacade;
+    private Long idEntidad;
+    private Long idEstadoCertificado;
+    private Long idBoleta1;
+    private Long idBoleta2;
+    private Long nroBoleta1;
+    private Long nroBoleta2;
+    private String codigoEntidad;
+
+    private Date fecha;
+    private Entidad entidad;
+    private EstadoCertificado estadoCertificado;
+    /*ESTAS BOLETAS DEBEN ESTAR PAGADAS PARA EMITIR EL CERTIFICADO*/
+    private Boleta boleta1; //BOLETA DE TASA CERTIFICACIONES
+    private Boleta boleta2; //BOLETA DE TASA POR TODO TRAMITE
+    private List<ActionItem> lstActionItems = new ArrayList<>();
+
+    /**
+     * Creates a new instance of SolicitudCertificadoManagedBean
+     */
+    public SolicitudCertificadoManagedBean() {
+    }
+
+    @PostConstruct
+    private void init() {
+        WebManagedBean sessionBean = this.getSessionBean();
+        if (sessionBean != null) {
+            try {
+                this.prepararAcciones(sessionBean.getUsuario());
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public void prepararAcciones(Usuario usuario) throws Exception {
+        try {
+            List<Grupo> listGrupo = usuario.getGrupos();
+            if (!(listGrupo.isEmpty())) {
+                for (Grupo grupoAux : listGrupo) {
+                    this.lstActionItems.addAll(grupoAux.getAcciones());
+                }
+            }
+            this.lstActionItems.addAll(usuario.getAcciones());
+            if (!(lstActionItems.isEmpty())) {
+                for (ActionItem accionAux : lstActionItems) {
+                    if (accionAux.getNombre().equalsIgnoreCase("nuevaSolicitudCertificado")) {
+                        this.setAlta(true);
+                    }
+                    if (accionAux.getNombre().equalsIgnoreCase("editarSolicitudCertificado")) {
+                        this.setModificacion(true);
+                    }
+                    if (accionAux.getNombre().equalsIgnoreCase("borrarSolicitudCertificado")) {
+                        this.setBaja(true);
+                    }
+                    if (accionAux.getNombre().equalsIgnoreCase("detalleSolicitudCertificado")) {
+                        this.setDetalle(true);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al recuperar las acciones del usuario");
+        }
+    }
+
+    public String getCodigoEntidad() {
+        return codigoEntidad;
+    }
+
+    public void setCodigoEntidad(String codigoEntidad) {
+        this.codigoEntidad = codigoEntidad;
+    }
+
+    public Long getNroBoleta1() {
+        return nroBoleta1;
+    }
+
+    public void setNroBoleta1(Long nroBoleta1) {
+        this.nroBoleta1 = nroBoleta1;
+    }
+
+    public Long getNroBoleta2() {
+        return nroBoleta2;
+    }
+
+    public void setNroBoleta2(Long nroBoleta2) {
+        this.nroBoleta2 = nroBoleta2;
+    }
+
+    public void setLstActionItems(List<ActionItem> lstActionItems) {
+        this.lstActionItems = lstActionItems;
+    }
+
+    public List<ActionItem> getLstActionItems() {
+        return lstActionItems;
+    }
+
+    public Long getIdEntidad() {
+        return idEntidad;
+    }
+
+    public void setIdEntidad(Long idEntidad) {
+        this.idEntidad = idEntidad;
+    }
+
+    public Long getIdEstadoCertificado() {
+        return idEstadoCertificado;
+    }
+
+    public void setIdEstadoCertificado(Long idEstadoCertificado) {
+        this.idEstadoCertificado = idEstadoCertificado;
+    }
+
+    public Long getIdBoleta1() {
+        return idBoleta1;
+    }
+
+    public void setIdBoleta1(Long idBoleta1) {
+        this.idBoleta1 = idBoleta1;
+    }
+
+    public Long getIdBoleta2() {
+        return idBoleta2;
+    }
+
+    public void setIdBoleta2(Long idBoleta2) {
+        this.idBoleta2 = idBoleta2;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Entidad getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(Entidad entidad) {
+        this.entidad = entidad;
+    }
+
+    public EstadoCertificado getEstadoCertificado() {
+        return estadoCertificado;
+    }
+
+    public void setEstadoCertificado(EstadoCertificado estadoCertificado) {
+        this.estadoCertificado = estadoCertificado;
+    }
+
+    public Boleta getBoleta1() {
+        return boleta1;
+    }
+
+    public void setBoleta1(Boleta boleta1) {
+        this.boleta1 = boleta1;
+    }
+
+    public Boleta getBoleta2() {
+        return boleta2;
+    }
+
+    public void setBoleta2(Boleta boleta2) {
+        this.boleta2 = boleta2;
+    }
+
+    @Override
+    public List<SolicitudCertificado> getListElements() {
+        if (this.getNombreBuscar().equals("")) {
+            this.setList(this.solicitudCertificadoFacade.findAll(true));
+        } else {
+            this.setList(this.solicitudCertificadoFacade.findAll(this.getNombreBuscar().toUpperCase()));
+        }
+        return (List<SolicitudCertificado>) this.getList();
+    }
+
+    @Override
+    public void limpiar() {
+
+    }
+
+    public String solicitar() {
+        try {
+            List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(this.getCodigoEntidad());
+            /*Busca la entidad con el codigo ingresado*/
+            if (entidadesAux.isEmpty()) {
+                throw new Exception("No existe una Entidad con el código ingresado.");
+            } else {
+                for (Entidad entidadAux : entidadesAux) {
+                    this.setIdEntidad(entidadAux.getId());
+                    this.setEntidad(entidadAux);
+                    System.out.println(entidadAux.getNombre());
+                }
+            }
+
+            /*Busca la boleta con el numero ingresado*/
+            this.setBoleta1(this.boletaFacade.findAllIn(true, this.getNroBoleta1()));
+            if (this.getBoleta1() == null) {
+                throw new Exception("El número correlativo de la boleta de CERTIFICACIONES (C/U) no es correcto.");
+            }
+
+            /*Busca la boleta con el numero ingresado*/
+            this.setBoleta2(this.boletaFacade.findAllIn(true, this.getNroBoleta2()));
+            if (this.getBoleta2() == null) {
+                throw new Exception("El número correlativo de la boleta de TASA POR TODO TRAMITE no es correcto.");
+            }
+
+            /*Si las boletas 1 y 2 están pagadas envia el email con el certificado.*/
+            if (this.getBoleta1().getEstadoBoleta().getId() == 3 && this.getBoleta2().getEstadoBoleta().getId() == 3) {
+
+                MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
+                        "Hola, aquí está su certificado. ", "urlArchivo");
+
+                hiloMail.start();
+            }
+
+            this.solicitudCertificadoFacade.solicitar(this.getIdEntidad(), this.getNroBoleta1(), this.getNroBoleta2());
+            this.setResultado("successErrorSolicitudCertificado");
+            this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito");
+            this.setTitle("Proceso Completo...");
+            this.setImages("glyphicon glyphicon-ok-circle");
+            this.limpiar();
+        } catch (Exception ex) {
+            this.setTitle("Resultado del Chequeo...");
+            this.setImages("glyphicon glyphicon-remove-circle");
+            this.setMsgSuccessError(ex.getMessage());
+            this.setResultado("successErrorSolicitudCertificado");
+            this.limpiar();
+        }
+        return this.getResultado();
+    }
+
+    @Override
+    public String crear() {
+        try {
+            this.solicitudCertificadoFacade.create(this.getIdEntidad(), this.getIdEstadoCertificado(), this.getIdBoleta1(), this.getIdBoleta2());
+            this.setResultado("successErrorSolicitudCertificado");
+            this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito");
+            this.setTitle("Proceso Completo...");
+            this.setImages("glyphicon glyphicon-ok-circle");
+            this.limpiar();
+        } catch (Exception ex) {
+            this.setTitle("Resultado del Chequeo...");
+            this.setImages("glyphicon glyphicon-remove-circle");
+            this.setMsgSuccessError(ex.getMessage());
+            this.setResultado("successErrorSolicitudCertificado");
+            this.limpiar();
+        }
+        return this.getResultado();
+    }
+
+    @Override
+    public void verDetalle() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest myRequest = (HttpServletRequest) context.getExternalContext().getRequest();
+        Long idSolicitudAux = Long.parseLong(myRequest.getParameter("id"));
+        SolicitudCertificado solicitudCertificadoAux = this.solicitudCertificadoFacade.find(idSolicitudAux);
+        this.setId(solicitudCertificadoAux.getId());
+
+    }
+
+    @Override
+    public void guardarBorrado() {
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            HttpServletRequest myRequest = (HttpServletRequest) context.getExternalContext().getRequest();
+            Long idSolicitudAux = Long.parseLong(myRequest.getParameter("id"));
+            this.solicitudCertificadoFacade.remove(idSolicitudAux);
+            this.setTitle(null);
+            this.setImages(null);
+            this.setMsgSuccessError(null);
+            this.setResultado("solicitudConf");
+        } catch (Exception ex) {
+            this.setTitle("Resultado del Chequeo...");
+            this.setImages("glyphicon glyphicon-remove-circle");
+            this.setMsgSuccessError(ex.getMessage());
+            this.setResultado("successErrorSolicitudCertificado");
+        }
+    }
+
+    @Override
+    public void prepararParaEditar() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest myRequest = (HttpServletRequest) context.getExternalContext().getRequest();
+        Long idSolicitudAux = Long.parseLong(myRequest.getParameter("id"));
+        SolicitudCertificado solicitudAux = this.solicitudCertificadoFacade.find(idSolicitudAux);
+        this.setId(solicitudAux.getId());
+
+    }
+
+    @Override
+    public String guardarEdicion() {
+        try {
+            this.solicitudCertificadoFacade.edit(this.getId(), this.getIdEntidad(), this.getIdEstadoCertificado(), this.getIdBoleta1(), this.getIdBoleta2());
+            this.setTitle("Proceso Completo...");
+            this.setImages("glyphicon glyphicon-ok-circle");
+            this.setResultado("successErrorSolicitudCertificado");
+            this.setMsgSuccessError("La solicitud de certificado ha sido editado con éxito");
+        } catch (Exception ex) {
+            this.setTitle("Resultado del Chequeo...");
+            this.setImages("glyphicon glyphicon-remove-circle");
+            this.setMsgSuccessError(ex.getMessage());
+            this.setResultado("successErrorSolicitudCertificado");
+        }
+        return this.getResultado();
+    }
+
+    @Override
+    public List<SelectItem> getSelectItems() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String crearOtro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+}

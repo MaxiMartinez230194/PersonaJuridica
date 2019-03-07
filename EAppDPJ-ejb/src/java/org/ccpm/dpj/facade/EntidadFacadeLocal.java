@@ -42,6 +42,8 @@ public interface EntidadFacadeLocal {
     public void remove(Long idEntidad) throws Exception;
 
     public List<Entidad> findAll(boolean estado, Long tipoEntidad);
+    
+    public List<Entidad> findByCodigo(String codigo);
 
     public List <Entidad> findCodigo(String nombre,String codigo,Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb,Long idEstadoEntidad, Long idTipoEntidad);
 }
