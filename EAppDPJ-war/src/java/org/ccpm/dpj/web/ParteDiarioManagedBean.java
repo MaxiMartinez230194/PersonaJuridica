@@ -48,7 +48,7 @@ import org.icefaces.ace.component.fileentry.FileEntryResults;
 
 /**
  *
- * @author Alvarenga Angel
+ * @author Facundo Gonzalez
  */
 @ManagedBean
 @SessionScoped
@@ -574,9 +574,9 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
                     this.setVerLinkReporte(false);
                     this.setVerLinkReporteMensual(false);
                     //System.out.println(this.parteDiarioFacade.existeParteDiario(this.adjunto)?"existe":"noexiste");
-                    System.out.println("que pasooooo:"+this.adjunto.substring(32,40));
+                    System.out.println("que pasooooo:"+this.adjunto.substring(34,42));
                     //uso la fecha del nombre del archivo como fecha de deposito.
-                    this.setFechaDeposito(this.textoAfechaDeposito(this.adjunto.substring(32, 40)));
+                    this.setFechaDeposito(this.textoAfechaDeposito(this.adjunto.substring(34, 42)));
                     //control fecha de deposito.
                     if (!this.parteDiarioFacade.existeParteDiarioConFechaDeposito(this.getFechaDeposito())){
                         this.subeArchivoActualizaEstadoBoletas(adjunto);
