@@ -14,15 +14,15 @@ and open the template in the editor.
         <ui:define name="content">
             <h:form id="formSolicitudCertificado" title=" ">
 
-                <ace:panel id="solicitudCertificadoPanel" header="#{msg.confSolicitudCertificado}">
+                <ace:panel id="solicitudCertificadoPanel" header="Solicitudes">
                     <h:panelGrid  columns="4" class="panel-buttons">
                         <span class="glyphicon-chico glyphicon-refresh"></span>
                         <h:panelGroup >
-                            <ace:linkButton action="solicitudCertificadoConf" actionListener="#{solicitudCertificadoManagedBean.actualizar}" value="#{msg.confSolicitudCertificado}"/>
+                            <ace:linkButton action="solicitudCertificadoConf" actionListener="#{solicitudCertificadoManagedBean.actualizar}" value="Solicitudes"/>
                         </h:panelGroup>
                         <span class="glyphicon-chico glyphicon-plus"></span>
                         <h:panelGroup rendered="#{solicitudCertificadoManagedBean.alta}">
-                            <ace:linkButton action="nuevaSolicitudCertificado" value="#{msg.newSolicitudCertificado}"/>
+                            <ace:linkButton action="nuevaSolicitudCertificado" value="Nueva Solicitud de Certificado"/>
                         </h:panelGroup>
                     </h:panelGrid>
 

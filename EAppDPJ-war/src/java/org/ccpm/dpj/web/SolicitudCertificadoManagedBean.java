@@ -22,6 +22,7 @@ import org.ccpm.dpj.entity.Entidad;
 import org.ccpm.dpj.entity.EstadoCertificado;
 import org.ccpm.dpj.entity.SolicitudCertificado;
 import org.ccpm.dpj.entity.Grupo;
+import org.ccpm.dpj.entity.ItemBoleta;
 import org.ccpm.dpj.entity.Usuario;
 import org.ccpm.dpj.facade.BoletaFacadeLocal;
 import org.ccpm.dpj.facade.EntidadFacadeLocal;
@@ -236,13 +237,15 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
             /*Busca la boleta con el numero ingresado*/
             this.setBoleta1(this.boletaFacade.findAllIn(true, this.getNroBoleta1()));
-            if (this.getBoleta1() == null) {
+            ItemBoleta itemAux = this.getBoleta1().getItems().get(0);
+            if (this.getBoleta1() == null || !itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
                 throw new Exception("El número correlativo de la boleta de CERTIFICACIONES (C/U) no es correcto.");
             }
 
             /*Busca la boleta con el numero ingresado*/
             this.setBoleta2(this.boletaFacade.findAllIn(true, this.getNroBoleta2()));
-            if (this.getBoleta2() == null) {
+            ItemBoleta itemAux2 = this.getBoleta2().getItems().get(0);
+            if (this.getBoleta2() == null || !itemAux2.getNombreTasa().equals("TASA POR TODO TRAMITE")) {
                 throw new Exception("El número correlativo de la boleta de TASA POR TODO TRAMITE no es correcto.");
             }
 
