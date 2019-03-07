@@ -27,6 +27,7 @@ public class LeyendaManagedBean extends UtilManagedBean implements Serializable{
     @EJB
     private LeyendaFacadeLocal leyendaFacade;
     private String nombre;   
+    private String anio;
     private List <ActionItem> lstActionItems = new ArrayList <>();
     
     /** Creates a new instance of LeyendaManagedBean */
@@ -88,6 +89,14 @@ public class LeyendaManagedBean extends UtilManagedBean implements Serializable{
     public String getNombre() {
         return nombre;
     }
+
+    public String getAnio() {
+        return anio;
+    }
+
+    public void setAnio(String anio) {
+        this.anio = anio;
+    }
     
     @Override
     public List <Leyenda> getListElements() {
@@ -107,7 +116,7 @@ public class LeyendaManagedBean extends UtilManagedBean implements Serializable{
     @Override
     public String crear() {
         try {
-            this.leyendaFacade.create(this.getNombre());
+            this.leyendaFacade.create(this.getAnio(), this.getNombre());
             this.setResultado("successErrorLeyenda");
             this.setMsgSuccessError("La leyenda ha sido generada con éxito");
             this.setTitle("Proceso Completo...");
@@ -126,7 +135,7 @@ public class LeyendaManagedBean extends UtilManagedBean implements Serializable{
     @Override
     public String crearOtro() {
         try {
-            this.leyendaFacade.create(this.getNombre());
+            this.leyendaFacade.create(this.getAnio(), this.getNombre());
             this.setResultado("nuevoLeyenda");
             this.limpiar();
         } catch (Exception ex) {
@@ -181,7 +190,7 @@ public class LeyendaManagedBean extends UtilManagedBean implements Serializable{
     @Override
     public String guardarEdicion() {
         try {
-            this.leyendaFacade.edit(this.getId(), this.getNombre());
+            this.leyendaFacade.edit(this.getId(), this.getAnio(), this.getNombre());
             this.setTitle("Proceso Completo...");
             this.setImages("glyphicon glyphicon-ok-circle");
             this.setResultado("successErrorLeyenda");

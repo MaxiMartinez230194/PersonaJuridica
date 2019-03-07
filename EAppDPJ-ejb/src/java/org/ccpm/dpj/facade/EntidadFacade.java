@@ -60,9 +60,11 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
     @Override
     public List<Entidad> findByCodigo(String codigo) {
         StringBuilder codigoAux = new StringBuilder();
+        StringBuilder query = new StringBuilder();
         codigoAux.append("A-"); //Por ahora solo asociaciones
         codigoAux.append(codigo);
-        Query consulta = em.createQuery("select object(o) from Entidad as o WHERE o.estado = true o.codigo LIKE '" + codigoAux.toString() + "'  ORDER BY o.id desc");
+        query.append("select object(o) from Entidad as o WHERE o.estado = true  AND o.codigo LIKE '").append(codigoAux.toString()).append("'  ORDER BY o.id desc");
+        Query consulta = em.createQuery(query.toString());
         return consulta.getResultList();
     }
 

@@ -22,6 +22,19 @@
                             <td align="left">
                                 <ace:message id="leyendaMsg" for="leyenda" initEffect="slide" changeEffect="shake"/> 
                             </td>
+                        </tr>  
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) Año" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="anio" label="Año" value="#{leyendaManagedBean.anio}" required="true">
+                                    <ace:ajax render="@this anio anioMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="anioMsg" for="anio" initEffect="slide" changeEffect="shake"/> 
+                            </td>
                         </tr>   
                     </table>                      
                     

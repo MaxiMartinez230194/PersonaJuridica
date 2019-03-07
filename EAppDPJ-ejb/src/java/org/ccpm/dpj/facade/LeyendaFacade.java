@@ -43,10 +43,11 @@ public class LeyendaFacade extends AbstractFacade<Leyenda> implements LeyendaFac
     }
     
     @Override
-    public void create(String nombre) throws Exception {
+    public void create(String anio, String nombre) throws Exception {
         try {
             Leyenda leyendaAux = new Leyenda();
-            leyendaAux.setNombre(nombre.toUpperCase());            
+            leyendaAux.setAnio(anio);
+            leyendaAux.setNombre(nombre);            
             leyendaAux.setEstado(true);
             this.create(leyendaAux);
         } catch (Exception e) {
@@ -66,10 +67,11 @@ public class LeyendaFacade extends AbstractFacade<Leyenda> implements LeyendaFac
     }
     
     @Override
-    public void edit(Long idEstado, String nombre) throws Exception {
+    public void edit(Long idEstado, String anio, String nombre) throws Exception {
         try {
             Leyenda leyendaAux = this.find(idEstado);
-            leyendaAux.setNombre(nombre.toUpperCase());            
+            leyendaAux.setAnio(anio);
+            leyendaAux.setNombre(nombre);            
             this.edit(leyendaAux);
         } catch (Exception e) {
             throw new Exception("Error al intentar editar el estado");

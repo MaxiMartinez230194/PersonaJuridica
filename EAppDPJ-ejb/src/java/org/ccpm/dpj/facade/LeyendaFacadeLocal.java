@@ -31,10 +31,10 @@ public interface LeyendaFacadeLocal {
 
     public List<Leyenda> findAll(String nombre);
 
-    public void create(String nombre) throws Exception;
+    public void create(String anio, String nombre) throws Exception;
 
     public void remove(Long idLeyenda) throws Exception;
 
-    public void edit(Long idLeyenda, String nombre) throws Exception;
+    public void edit(Long idLeyenda, String anio, String nombre) throws Exception;
     
 }

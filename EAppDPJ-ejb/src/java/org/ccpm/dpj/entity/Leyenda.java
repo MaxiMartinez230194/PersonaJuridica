@@ -14,6 +14,7 @@ public class Leyenda implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String anio;
     private String nombre;
     
     
@@ -21,6 +22,14 @@ public class Leyenda implements Serializable {
 
     public Leyenda() {
         
+    }
+
+    public String getAnio() {
+        return anio;
+    }
+
+    public void setAnio(String anio) {
+        this.anio = anio;
     }
 
     public String getNombre() {
