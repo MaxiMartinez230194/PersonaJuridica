@@ -56,21 +56,21 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
     }
     
     @Override
-    public void create(Long idEntidad, Long idEstadoCertificado, Long idBoleta1, Long idBoleta2) throws Exception {
+    public void create(Long idEntidad, Long idEstadoCertificado, Long nroBoleta1, Long nroBoleta2) throws Exception {
         try {
-            SolicitudCertificado solicitudAux = new SolicitudCertificado();
-            Entidad entidadAux = this.entidadFacade.find(idEntidad);
-            EstadoCertificado estadoCertificadoAux = this.estadoCertificadoFacade.find(idEstadoCertificado);
-            Boleta boleta1Aux = this.boletaFacade.find(idBoleta1);
-            Boleta boleta2Aux = this.boletaFacade.find(idBoleta2);
-            
-            solicitudAux.setEstado(true);
-            solicitudAux.setFecha(new Date());
-            solicitudAux.setEntidad(entidadAux);
-            solicitudAux.setEstadoCertificado(estadoCertificadoAux);
-            solicitudAux.setBoleta1(boleta1Aux);
-            solicitudAux.setBoleta2(boleta2Aux);
-            this.create(solicitudAux);
+//            SolicitudCertificado solicitudAux = new SolicitudCertificado();
+//            Entidad entidadAux = this.entidadFacade.find(idEntidad);
+//            EstadoCertificado estadoCertificadoAux = this.estadoCertificadoFacade.find(idEstadoCertificado);
+//            Boleta boleta1Aux = this.boletaFacade.findAllIn(true, nroBoleta1);
+//            Boleta boleta2Aux = this.boletaFacade.findAllIn(true, nroBoleta2);
+//            
+//            solicitudAux.setEstado(true);
+//            solicitudAux.setFecha(new Date());
+//            solicitudAux.setEntidad(entidadAux);
+//            solicitudAux.setEstadoCertificado(estadoCertificadoAux);
+//            solicitudAux.setBoleta1(boleta1Aux);
+//            solicitudAux.setBoleta2(boleta2Aux);
+//            this.create(solicitudAux);
         } catch (Exception e) {
             throw new Exception("Error al intentar crear la solicitud");
         }
@@ -109,17 +109,17 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
     @Override
     public void edit(Long idSolicitud, Long idEntidad, Long idEstadoCertificado, Long idBoleta1, Long idBoleta2) throws Exception {
         try {
-            SolicitudCertificado solicitudAux = this.find(idSolicitud);
-            Entidad entidadAux = this.entidadFacade.find(idEntidad);
-            EstadoCertificado estadoCertificadoAux = this.estadoCertificadoFacade.find(idEstadoCertificado);
-            Boleta boleta1Aux = this.boletaFacade.find(idBoleta1);
-            Boleta boleta2Aux = this.boletaFacade.find(idBoleta2);
-            solicitudAux.setFecha(new Date());
-            solicitudAux.setEntidad(entidadAux);
-            solicitudAux.setEstadoCertificado(estadoCertificadoAux);
-            solicitudAux.setBoleta1(boleta1Aux);
-            solicitudAux.setBoleta2(boleta2Aux);
-            this.edit(solicitudAux);
+//            SolicitudCertificado solicitudAux = this.find(idSolicitud);
+//            Entidad entidadAux = this.entidadFacade.find(idEntidad);
+//            EstadoCertificado estadoCertificadoAux = this.estadoCertificadoFacade.find(idEstadoCertificado);
+//            Boleta boleta1Aux = this.boletaFacade.find(idBoleta1);
+//            Boleta boleta2Aux = this.boletaFacade.find(idBoleta2);
+//            solicitudAux.setFecha(new Date());
+//            solicitudAux.setEntidad(entidadAux);
+//            solicitudAux.setEstadoCertificado(estadoCertificadoAux);
+//            solicitudAux.setBoleta1(boleta1Aux);
+//            solicitudAux.setBoleta2(boleta2Aux);
+//            this.edit(solicitudAux);
         } catch (Exception e) {
             throw new Exception("Error al intentar editar la solicitud");
         }

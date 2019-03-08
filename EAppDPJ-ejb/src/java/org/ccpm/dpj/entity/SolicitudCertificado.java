@@ -16,6 +16,7 @@ public class SolicitudCertificado implements Serializable {
     private Long id;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fecha;
+    /*ESTAS BOLETAS DEBEN ESTAR PAGADAS PARA EMITIR EL CERTIFICADO*/
     @Column(name="nro_boleta1")
     private Long nroBoleta1; //BOLETA DE TASA CERTIFICACIONES
     @Column(name="nro_boleta2")
@@ -24,11 +25,6 @@ public class SolicitudCertificado implements Serializable {
     private Entidad entidad;
     @OneToOne
     private EstadoCertificado estadoCertificado;
-    /*ESTAS BOLETAS DEBEN ESTAR PAGADAS PARA EMITIR EL CERTIFICADO*/
-    @OneToOne
-    private Boleta boleta1; //BOLETA DE TASA CERTIFICACIONES
-    @OneToOne
-    private Boleta boleta2; //BOLETA DE TASA POR TODO TRAMITE
     private boolean estado;//borrado lógico
 
     public SolicitudCertificado() {
@@ -59,21 +55,6 @@ public class SolicitudCertificado implements Serializable {
         this.entidad = entidad;
     }
 
-    public Boleta getBoleta1() {
-        return boleta1;
-    }
-
-    public void setBoleta1(Boleta boleta1) {
-        this.boleta1 = boleta1;
-    }
-
-    public Boleta getBoleta2() {
-        return boleta2;
-    }
-
-    public void setBoleta2(Boleta boleta2) {
-        this.boleta2 = boleta2;
-    }
 
     public boolean isEstado() {
         return estado;

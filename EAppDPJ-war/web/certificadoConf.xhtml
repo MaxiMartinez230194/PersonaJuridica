@@ -61,12 +61,20 @@ and open the template in the editor.
                                 <h:outputText id="cellNroSolicitudCertificado" value="#{item.entidad.nombre}"/>
                             </center>                           
                         </ace:column>
+
+                        <ace:column id="fechaSolicitudCertificado" headerText="FECHA SOLICITUD">
+                            <center>
+                                <h:outputText id="cellFechaSolicitudCertificado" value="#{item.fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/>
+                                </h:outputText>
+                            </center>                           
+                        </ace:column>
                         <ace:column id="estadoCertificado" headerText="ESTADO">
                             <center>
                                 <h:outputText id="cellestadoCertificado" value="#{item.estadoCertificado.nombre}"/>
                             </center>                           
                         </ace:column>
-                        
+
 
 
                         <ace:column id="accion" headerText="#{msg.actionT}" style="width: 15%">
@@ -76,7 +84,7 @@ and open the template in the editor.
                                     <span class="glyphicon glyphicon-zoom-in"></span>                             
                                     <f:param name="id" value="#{item.id}"/>
                                 </ace:pushButton>
-                                
+
                                 <ace:pushButton id="editar"  action="editarSolicitudCertificado" actionListener="#{solicitudCertificadoManagedBean.prepararParaEditar()}" rendered="#{solicitudCertificadoManagedBean.modificacion}">
                                     <span class="glyphicon glyphicon-pencil"></span> 
                                     <f:param name="id" value="#{item.id}"/>

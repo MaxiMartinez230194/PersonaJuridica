@@ -31,7 +31,7 @@ public interface SolicitudCertificadoFacadeLocal {
 
     public List<SolicitudCertificado> findAll(String nombre);
 
-    public void create(Long idEntidad, Long idEstadoCertificado, Long idBoleta1, Long idBoleta2) throws Exception;
+    public void create(Long idEntidad, Long idEstadoCertificado, Long nroBoleta1, Long nroBoleta2) throws Exception;
 
     public void solicitar(Long idEntidad, Long nroBoleta1, Long nroBoleta2) throws Exception;
 

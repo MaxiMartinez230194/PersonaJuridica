@@ -225,6 +225,9 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
     public String solicitar() {
         try {
+
+            //BOLETA 1 = CERTIFICACIONES
+            //BOLETA 2 = TODO TRAMITE
             List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(this.getCodigoEntidad());
             /*Busca la entidad con el codigo ingresado*/
             if (entidadesAux.isEmpty()) {
@@ -239,16 +242,24 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
             /*Busca la boleta con el numero ingresado*/
             this.setBoleta1(this.boletaFacade.findAllIn(true, this.getNroBoleta1()));
-            ItemBoleta itemAux = this.getBoleta1().getItems().get(0);
-            if (this.getBoleta1() == null || !itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
-                throw new Exception("El número correlativo de la boleta de CERTIFICACIONES (C/U) no es correcto.");
+            if (this.getBoleta1() != null) {
+                ItemBoleta itemAux = this.getBoleta1().getItems().get(0);
+                if (!itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
+                    throw new Exception("El número de la boleta ingresada no pertenece a la TASA CERTIFICACIONES (C/U).");
+                }
+            } else {
+                throw new Exception("El número de la boleta de CERTIFICACIONES (C/U) no es correcto.");
             }
 
             /*Busca la boleta con el numero ingresado*/
             this.setBoleta2(this.boletaFacade.findAllIn(true, this.getNroBoleta2()));
-            ItemBoleta itemAux2 = this.getBoleta2().getItems().get(0);
-            if (this.getBoleta2() == null || !itemAux2.getNombreTasa().equals("TASA POR TODO TRAMITE")) {
-                throw new Exception("El número correlativo de la boleta de TASA POR TODO TRAMITE no es correcto.");
+            if (this.getBoleta2() != null) {
+                ItemBoleta itemAux2 = this.getBoleta2().getItems().get(0);
+                if (!itemAux2.getNombreTasa().equals("TASA POR TODO TRAMITE")) {
+                    throw new Exception("El número de la boleta ingresada no pertenece a la TASA POR TODO TRAMITE.");
+                }
+            } else {
+                throw new Exception("El número de la boleta de TASA POR TODO TRAMITE no es correcto.");
             }
 
             /*Si las boletas 1 y 2 están pagadas envia el email con el certificado.*/
@@ -274,7 +285,6 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             this.setImages("glyphicon glyphicon-remove-circle");
             this.setMsgSuccessError(ex.getMessage());
             this.setResultado("successErrorSolicitudCertificado");
-            this.limpiar();
         }
         return this.getResultado();
     }
