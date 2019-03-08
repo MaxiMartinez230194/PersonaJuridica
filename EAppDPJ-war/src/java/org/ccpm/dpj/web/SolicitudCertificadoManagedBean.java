@@ -218,7 +218,9 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
     @Override
     public void limpiar() {
-
+        this.setCodigoEntidad(null);
+        this.setNroBoleta1(null);
+        this.setNroBoleta2(null);
     }
 
     public String solicitar() {
@@ -252,13 +254,16 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             /*Si las boletas 1 y 2 están pagadas envia el email con el certificado.*/
             if (this.getBoleta1().getEstadoBoleta().getId() == 3 && this.getBoleta2().getEstadoBoleta().getId() == 3) {
 
-                MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
-                        "Hola, aquí está su certificado. ", "urlArchivo");
-
-                hiloMail.start();
+                System.out.println("Ya pagó");
+//                MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
+//                        "Hola, aquí está su certificado. ", "urlArchivo");
+//
+//                hiloMail.start();
+            } else {
+                System.out.println("No pagó todavia");
+                this.solicitudCertificadoFacade.solicitar(this.getIdEntidad(), this.getNroBoleta1(), this.getNroBoleta2());
             }
 
-            this.solicitudCertificadoFacade.solicitar(this.getIdEntidad(), this.getNroBoleta1(), this.getNroBoleta2());
             this.setResultado("successErrorSolicitudCertificado");
             this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito");
             this.setTitle("Proceso Completo...");

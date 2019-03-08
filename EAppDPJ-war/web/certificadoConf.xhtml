@@ -14,11 +14,11 @@ and open the template in the editor.
         <ui:define name="content">
             <h:form id="formSolicitudCertificado" title=" ">
 
-                <ace:panel id="solicitudCertificadoPanel" header="Solicitudes">
+                <ace:panel id="solicitudCertificadoPanel" header="Certificados">
                     <h:panelGrid  columns="4" class="panel-buttons">
                         <span class="glyphicon-chico glyphicon-refresh"></span>
                         <h:panelGroup >
-                            <ace:linkButton action="solicitudCertificadoConf" actionListener="#{solicitudCertificadoManagedBean.actualizar}" value="Solicitudes"/>
+                            <ace:linkButton action="solicitudCertificadoConf" actionListener="#{solicitudCertificadoManagedBean.actualizar}" value="Certificados"/>
                         </h:panelGroup>
                         <span class="glyphicon-chico glyphicon-plus"></span>
                         <h:panelGroup rendered="#{solicitudCertificadoManagedBean.alta}">
@@ -59,6 +59,11 @@ and open the template in the editor.
                         <ace:column id="nroSolicitudCertificado" headerText="NOMBRE DE ENTIDAD">
                             <center>
                                 <h:outputText id="cellNroSolicitudCertificado" value="#{item.entidad.nombre}"/>
+                            </center>                           
+                        </ace:column>
+                        <ace:column id="estadoCertificado" headerText="ESTADO">
+                            <center>
+                                <h:outputText id="cellestadoCertificado" value="#{item.estadoCertificado.nombre}"/>
                             </center>                           
                         </ace:column>
                         
