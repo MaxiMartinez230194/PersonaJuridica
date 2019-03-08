@@ -223,44 +223,77 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         this.setNroBoleta2(null);
     }
 
+    public void buscarEntidad(String codigoEntidad) throws Exception {
+        List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(this.getCodigoEntidad());
+        if (entidadesAux.isEmpty()) {
+            throw new Exception("No existe una Entidad con el código ingresado.");
+        } else {
+            for (Entidad entidadAux : entidadesAux) {
+                this.setIdEntidad(entidadAux.getId());
+                this.setEntidad(entidadAux);
+                System.out.println(entidadAux.getNombre());
+            }
+        }
+    }
+
+    public void buscarBoletaCertificaciones(Long nroCorrelativo) throws Exception {
+        Boleta boletaAux = this.boletaFacade.findAllIn(true, nroCorrelativo);
+        if (boletaAux != null) {
+            ItemBoleta itemAux = boletaAux.getItems().get(0);
+            if (!itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
+                throw new Exception("El número de la boleta ingresada no pertenece a la TASA CERTIFICACIONES (C/U).");
+            } else {
+                this.setBoleta1(boletaAux);
+            }
+        } else {
+            throw new Exception("El número de la boleta de CERTIFICACIONES (C/U) no es correcto.");
+        }
+    }
+
+    public void buscarBoletaTodoTramite(Long nroCorrelativo) throws Exception {
+        Boleta boletaAux = this.boletaFacade.findAllIn(true, nroCorrelativo);
+        if (boletaAux != null) {
+            ItemBoleta itemAux2 = boletaAux.getItems().get(0);
+            if (!itemAux2.getNombreTasa().equals("TASA POR TODO TRAMITE")) {
+                throw new Exception("El número de la boleta ingresada no pertenece a la TASA POR TODO TRAMITE.");
+            } else {
+                this.setBoleta2(boletaAux);
+            }
+        } else {
+            throw new Exception("El número de la boleta de TASA POR TODO TRAMITE no es correcto.");
+        }
+    }
+
+    public void verificarEstadoSolicitud(Long idEntidad, Long nroBoleta1) throws Exception {
+        List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByEntidadAndNroBoleta(idEntidad, nroBoleta1);
+        if (!solicitudesAux.isEmpty()) {
+            for (SolicitudCertificado solicitudAux : solicitudesAux) {
+                switch (solicitudAux.getEstadoCertificado().getId().intValue()) {
+                    case 1:
+                        throw new Exception("Ya realizó una SOLICITUD con los datos ingresados. Dentro de las 24 hs. hábiles se enviará el certificado a su correo electrónico.");
+                    case 2:
+                        throw new Exception("Ya se ha EMITIDO el certificado para esa Entidad con esos números de Boletas. Verifique su correo electrónico.");
+                }
+            }
+        }
+    }
+
     public String solicitar() {
         try {
 
             //BOLETA 1 = CERTIFICACIONES
             //BOLETA 2 = TODO TRAMITE
-            List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(this.getCodigoEntidad());
             /*Busca la entidad con el codigo ingresado*/
-            if (entidadesAux.isEmpty()) {
-                throw new Exception("No existe una Entidad con el código ingresado.");
-            } else {
-                for (Entidad entidadAux : entidadesAux) {
-                    this.setIdEntidad(entidadAux.getId());
-                    this.setEntidad(entidadAux);
-                    System.out.println(entidadAux.getNombre());
-                }
-            }
+            this.buscarEntidad(this.getCodigoEntidad());
 
-            /*Busca la boleta con el numero ingresado*/
-            this.setBoleta1(this.boletaFacade.findAllIn(true, this.getNroBoleta1()));
-            if (this.getBoleta1() != null) {
-                ItemBoleta itemAux = this.getBoleta1().getItems().get(0);
-                if (!itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
-                    throw new Exception("El número de la boleta ingresada no pertenece a la TASA CERTIFICACIONES (C/U).");
-                }
-            } else {
-                throw new Exception("El número de la boleta de CERTIFICACIONES (C/U) no es correcto.");
-            }
+            /*Busca la boleta de certificaciones con el numero ingresado*/
+            this.buscarBoletaCertificaciones(this.getNroBoleta1());
 
-            /*Busca la boleta con el numero ingresado*/
-            this.setBoleta2(this.boletaFacade.findAllIn(true, this.getNroBoleta2()));
-            if (this.getBoleta2() != null) {
-                ItemBoleta itemAux2 = this.getBoleta2().getItems().get(0);
-                if (!itemAux2.getNombreTasa().equals("TASA POR TODO TRAMITE")) {
-                    throw new Exception("El número de la boleta ingresada no pertenece a la TASA POR TODO TRAMITE.");
-                }
-            } else {
-                throw new Exception("El número de la boleta de TASA POR TODO TRAMITE no es correcto.");
-            }
+            /*Busca la boleta de todo tramite con el numero ingresado*/
+            this.buscarBoletaTodoTramite(this.getNroBoleta2());
+
+            /*Verificamos que no se haya emitido ya un certificado para esa entidad con esa boleta*/
+            this.verificarEstadoSolicitud(this.getIdEntidad(), this.getNroBoleta1());
 
             /*Si las boletas 1 y 2 están pagadas envia el email con el certificado.*/
             if (this.getBoleta1().getEstadoBoleta().getId() == 3 && this.getBoleta2().getEstadoBoleta().getId() == 3) {

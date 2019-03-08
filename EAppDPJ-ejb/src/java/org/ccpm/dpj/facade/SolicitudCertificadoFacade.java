@@ -19,12 +19,12 @@ import org.ccpm.dpj.entity.Entidad;
 import org.ccpm.dpj.entity.EstadoCertificado;
 import org.ccpm.dpj.entity.SolicitudCertificado;
 
-
 @Stateless
 public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertificado> implements SolicitudCertificadoFacadeLocal {
+
     @PersistenceContext(unitName = "EAppDPJ-ejbPU")
     private EntityManager em;
-    
+
     @EJB
     private EntidadFacadeLocal entidadFacade;
     @EJB
@@ -40,10 +40,10 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
     public SolicitudCertificadoFacade() {
         super(SolicitudCertificado.class);
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List <SolicitudCertificado> findAll(boolean estado) {
+    public List<SolicitudCertificado> findAll(boolean estado) {
         Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.estado = :p1");
         consulta.setParameter("p1", estado);
         return consulta.getResultList();
@@ -51,10 +51,20 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List <SolicitudCertificado> findAll(String nombre) {
+    public List<SolicitudCertificado> findByEntidadAndNroBoleta(Long idEntidad, Long nroBoleta1) {
+        Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.entidad.id = :p1 AND o.nroBoleta1 = :p2");
+        consulta.setParameter("p1", idEntidad);
+        consulta.setParameter("p2", nroBoleta1);
+        return consulta.getResultList();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @Override
+
+    public List<SolicitudCertificado> findAll(String nombre) {
         return em.createQuery("select object(o) FROM SolicitudCertificado as o WHERE o.estado = true AND o.nombre LIKE '" + nombre + "%' ORDER BY o.nombre ").getResultList();
     }
-    
+
     @Override
     public void create(Long idEntidad, Long idEstadoCertificado, Long nroBoleta1, Long nroBoleta2) throws Exception {
         try {
@@ -75,14 +85,14 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
             throw new Exception("Error al intentar crear la solicitud");
         }
     }
-    
+
     @Override
     public void solicitar(Long idEntidad, Long nroBoleta1, Long nroBoleta2) throws Exception {
         try {
             SolicitudCertificado solicitudAux = new SolicitudCertificado();
             Entidad entidadAux = this.entidadFacade.find(idEntidad);
             EstadoCertificado estadoCertificadoAux = this.estadoCertificadoFacade.find(1L); //EN ESPERA
-            
+
             solicitudAux.setEstado(true);
             solicitudAux.setFecha(new Date());
             solicitudAux.setEntidad(entidadAux);
@@ -94,7 +104,7 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
             throw new Exception("Error al intentar crear la solicitud");
         }
     }
-    
+
     @Override
     public void remove(Long idSolicitud) throws Exception {
         try {
@@ -105,7 +115,7 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
             throw new Exception("Error al intentar borrar la solicitud");
         }
     }
-    
+
     @Override
     public void edit(Long idSolicitud, Long idEntidad, Long idEstadoCertificado, Long idBoleta1, Long idBoleta2) throws Exception {
         try {
@@ -124,5 +134,5 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
             throw new Exception("Error al intentar editar la solicitud");
         }
     }
-    
+
 }

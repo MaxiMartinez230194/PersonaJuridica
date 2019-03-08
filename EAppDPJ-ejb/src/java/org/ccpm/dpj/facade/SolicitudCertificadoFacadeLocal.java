@@ -9,7 +9,6 @@ import java.util.List;
 import javax.ejb.Local;
 import org.ccpm.dpj.entity.SolicitudCertificado;
 
-
 @Local
 public interface SolicitudCertificadoFacadeLocal {
 
@@ -27,7 +26,9 @@ public interface SolicitudCertificadoFacadeLocal {
 
     public int count();
 
-    public List<SolicitudCertificado> findAll(boolean solicitud);
+    public List<SolicitudCertificado> findAll(boolean estado);
+
+    public List<SolicitudCertificado> findByEntidadAndNroBoleta(Long idEntidad, Long nroBoleta);
 
     public List<SolicitudCertificado> findAll(String nombre);
 
@@ -38,5 +39,5 @@ public interface SolicitudCertificadoFacadeLocal {
     public void remove(Long idSolicitud) throws Exception;
 
     public void edit(Long idSolicitud, Long idEntidad, Long idEstadoCertificado, Long idBoleta1, Long idBoleta2) throws Exception;
-    
+
 }
