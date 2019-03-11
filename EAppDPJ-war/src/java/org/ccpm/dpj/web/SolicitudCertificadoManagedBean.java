@@ -4,18 +4,24 @@
  */
 package org.ccpm.dpj.web;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.ccpm.dpj.entity.ActionItem;
 import org.ccpm.dpj.entity.Boleta;
 import org.ccpm.dpj.entity.Entidad;
@@ -23,10 +29,14 @@ import org.ccpm.dpj.entity.EstadoCertificado;
 import org.ccpm.dpj.entity.SolicitudCertificado;
 import org.ccpm.dpj.entity.Grupo;
 import org.ccpm.dpj.entity.ItemBoleta;
+import org.ccpm.dpj.entity.Leyenda;
 import org.ccpm.dpj.entity.Usuario;
 import org.ccpm.dpj.facade.BoletaFacadeLocal;
 import org.ccpm.dpj.facade.EntidadFacadeLocal;
+import org.ccpm.dpj.facade.LeyendaFacadeLocal;
 import org.ccpm.dpj.facade.SolicitudCertificadoFacadeLocal;
+import org.ccpm.dpj.reporte.BoletaReport;
+import org.ccpm.dpj.utilidad.DPJResource;
 import org.ccpm.dpj.utilidad.MailThread;
 
 @ManagedBean
@@ -39,6 +49,8 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
     private BoletaFacadeLocal boletaFacade;
     @EJB
     private EntidadFacadeLocal entidadFacade;
+    @EJB
+    private LeyendaFacadeLocal leyendaFacade;
     private Long idEntidad;
     private Long idEstadoCertificado;
     private Long idBoleta1;
@@ -286,10 +298,10 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             /*Busca la entidad con el codigo ingresado*/
             this.buscarEntidad(this.getCodigoEntidad());
 
-            /*Busca la boleta de certificaciones con el numero ingresado*/
+            /*Busca la boleta de certificaciones con el numero ingresado, si encuentra setea en Boleta1*/
             this.buscarBoletaCertificaciones(this.getNroBoleta1());
 
-            /*Busca la boleta de todo tramite con el numero ingresado*/
+            /*Busca la boleta de todo tramite con el numero ingresado, si encuentra setea en Boleta2*/
             this.buscarBoletaTodoTramite(this.getNroBoleta2());
 
             /*Verificamos que no se haya emitido ya un certificado para esa entidad con esa boleta*/
@@ -320,6 +332,22 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             this.setResultado("successErrorSolicitudCertificado");
         }
         return this.getResultado();
+    }
+
+    public Resource getImprimirCertificado() throws JRException, FileNotFoundException, IOException {
+        Resource miRecurso = null;
+
+        try {
+            Date hoy = new Date();
+            Leyenda leyendaAux = this.leyendaFacade.findByAnio(Integer.toString(hoy.getYear()));
+            JasperPrint jasperResultado = new BoletaReport().imprimirCertificado(this.getEntidad().getNombre(), this.getEntidad().getCodigo(), 108979L, 98114L, leyendaAux.getNombre());
+            byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
+            miRecurso = new DPJResource(bites);
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return miRecurso;
     }
 
     @Override

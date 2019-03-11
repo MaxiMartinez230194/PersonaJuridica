@@ -35,6 +35,14 @@ public class LeyendaFacade extends AbstractFacade<Leyenda> implements LeyendaFac
         consulta.setParameter("p1", estado);
         return consulta.getResultList();
     }
+    
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    @Override
+    public Leyenda findByAnio(String anio){
+        Query consulta = em.createQuery("select object(o) from Leyenda as o WHERE o.estado = true and o.anio = :p1");
+        consulta.setParameter("p1", anio);
+        return (Leyenda) consulta.getSingleResult();
+    }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override

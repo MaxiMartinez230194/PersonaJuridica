@@ -24,6 +24,10 @@ and open the template in the editor.
                         <h:panelGroup rendered="#{solicitudCertificadoManagedBean.alta}">
                             <ace:linkButton action="nuevaSolicitudCertificado" value="Nueva Solicitud de Certificado"/>
                         </h:panelGroup>
+                        <span class="glyphicon-chico glyphicon-plus"></span>
+                        <h:panelGroup >
+                            <ace:linkButton action="successErrorImprimirCertificado" value="imprimir Certificado"/>
+                        </h:panelGroup>
                     </h:panelGrid>
 
                     <ace:panel id="solicitudCertificadoPanelBusqueda" header="#{msg.busqueda}" toggleable="true" closeSpeed="2000" class="panel-buttons" collapsed="true">

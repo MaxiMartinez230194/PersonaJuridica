@@ -30,6 +30,8 @@ public interface LeyendaFacadeLocal {
     public List<Leyenda> findAll(boolean estado);
 
     public List<Leyenda> findAll(String nombre);
+    
+    public Leyenda findByAnio(String anio);
 
     public void create(String anio, String nombre) throws Exception;
 
