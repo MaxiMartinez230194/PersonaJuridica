@@ -102,7 +102,7 @@ public class BoletaReport {
             parametros.put("nombreEntidad", nombreEntidad);
             parametros.put("nroBoleta1", nroBoleta1);
             parametros.put("nroBoleta2", nroBoleta2);
-            parametros.put("imagenHeader", getClass().getResource("escudito.jpg").getPath());
+            parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
             parametros.put("leyendaProvincia", leyenda);
             parametros.put("nroEntidad", nroEntidad);
             masterReport = (JasperReport) JRLoader.loadObject(url);

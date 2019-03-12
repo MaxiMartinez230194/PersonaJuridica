@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2019-03-11T18:12:02 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="certificadoEntidad" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="537" leftMargin="29" rightMargin="29" topMargin="29" bottomMargin="29" uuid="41e02b49-0947-47de-8778-18a2393e76a4">
-	<property name="ireport.zoom" value="1.3310000000000004"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+<!-- 2019-03-12T10:07:27 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="actaCargo" pageWidth="612" pageHeight="1008" columnWidth="499" leftMargin="85" rightMargin="28" topMargin="56" bottomMargin="28" uuid="70ecc80e-8c3b-4e68-8e83-7c89a0b1fc4d">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -14,35 +11,117 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DPJ ADAPTER"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="237"/>
-	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="752"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="568"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="418"/>
-	<parameter name="nombreEntidad" class="java.lang.String">
-		<defaultValueExpression><![CDATA["NOMBRE ENTIDAD"]]></defaultValueExpression>
-	</parameter>
-	<parameter name="nroBoleta1" class="java.lang.Long">
-		<parameterDescription><![CDATA[]]></parameterDescription>
-	</parameter>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DPJ ADAPTER"/>
+	<parameter name="pathimagen" class="java.lang.String"/>
+	<parameter name="nombreEntidad" class="java.lang.String"/>
+	<parameter name="nroBoleta1" class="java.lang.Long"/>
 	<parameter name="nroBoleta2" class="java.lang.Long">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
-	<parameter name="imagenHeader" class="java.lang.String"/>
-	<parameter name="leyendaProvincia" class="java.lang.String"/>
+	<parameter name="leyendaProvincia" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
 	<parameter name="nroEntidad" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select fecha
 from solicitudes
-where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBoleta2} ]]>
+where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBoleta2}]]>
 	</queryString>
 	<field name="fecha" class="java.sql.Date"/>
 	<title>
-		<band height="156" splitType="Stretch">
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		<band height="350">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="0" y="36" width="77" height="69" uuid="c05770d6-0a8b-4faa-a353-117ada7e01e1">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{pathimagen}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="108" width="499" height="21" uuid="4661aad1-f19f-4dd9-92f3-847e3bd35653">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN DE PERSONAS JURÍDICAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="75" width="115" height="9" uuid="ee59ae9a-0008-46f9-9cf3-a4692b3fd891">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="5" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Alvear 1282 - Teléfono (376)4447633 - 4447756]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="48" width="115" height="9" uuid="08c3c7f8-810f-490c-9fed-97160bf8e72b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROVINCIA DE MISIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="84" width="115" height="9" uuid="3de3b3b6-8a9e-45b9-99a7-e3fc95d56aca">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(3300) Posadas - Misiones]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="57" width="115" height="9" uuid="b96fffdf-b643-402c-9844-d01fb9640927">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MINISTERIO DE GOBIERNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="66" width="115" height="9" uuid="17f44860-f237-43f5-bc9b-3ae2390af28b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN DE PERSONAS JURÍDICAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="129" width="499" height="20" uuid="704f58cc-b7a3-445a-a3cf-c68d02d1708a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box leftPadding="1"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICACIÓN]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="140" y="0" width="390" height="43" uuid="88a92051-4c1d-438f-9c4a-8a8730d69339">
+				<reportElement x="0" y="150" width="499" height="170" uuid="cb3b18df-de17-4d54-980b-3fc214c3a54f">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CERTIFICO que la entidad denominada: "+$P{nombreEntidad}+" cuenta con Personería Jurídica, se halla INSCRIPTA Y VIGENTE en el registro de entidades civiles sin fines de lucro de esta Dirección a mi cargo bajo el N° "+$P{nombreEntidad}+". SE EXPIDE: El presente en la ciudad de Posadas, Capital de la Provincia de Misiones, a los "+DATEFORMAT($F{fecha},"dd")+" días del mes "+DATEFORMAT($F{fecha},"MMMM")+" del año "+DATEFORMAT($F{fecha},"YYYY")+".-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="109" y="0" width="390" height="43" uuid="363cbee5-0ad3-429f-9213-f39e329f376c">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Justified">
@@ -50,40 +129,6 @@ where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBo
 				</textElement>
 				<textFieldExpression><![CDATA[$P{leyendaProvincia}]]></textFieldExpression>
 			</textField>
-			<image onErrorType="Blank">
-				<reportElement x="0" y="0" width="130" height="43" uuid="10ae2395-3b7d-40d1-b74e-505692c3da62">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{imagenHeader}]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement x="80" y="126" width="400" height="30" uuid="844c3f3b-ce14-4e64-b8af-a13cd9adea38"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CERTIFICACIÓN]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="43" width="130" height="37" uuid="a093930c-2485-4784-b01a-9a24ea216957"/>
-				<textElement textAlignment="Center">
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[MINISTERIO DE GOBIERNO
-Roque Perez N° 2398
-(3300) Posadas-Misiones]]></text>
-			</staticText>
 		</band>
 	</title>
-	<detail>
-		<band height="164" splitType="Prevent">
-			<textField>
-				<reportElement x="80" y="0" width="400" height="164" uuid="e9c6fa78-260d-4720-a4fc-5a61b83506f7"/>
-				<textElement textAlignment="Justified">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA["CERTIFICO que la entidad denominada: NOMBRE DE ENTIDAD cuenta con Personería Jurídica, se halla INSCRIPTA Y VIGENTE en el registro de entidades civiles sin fines de lucro de esta Dirección a mi cargo bajo el N° NUMERO DE ENTIDAD. SE EXPIDE: El presente en la ciudad de Posadas, Capital de la Provincia de Misiones, a los FECHA DE EMISION EN LETRAS.-"]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
 </jasperReport>

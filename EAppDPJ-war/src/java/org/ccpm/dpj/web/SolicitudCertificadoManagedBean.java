@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -236,7 +237,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
     }
 
     public void buscarEntidad(String codigoEntidad) throws Exception {
-        List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(this.getCodigoEntidad());
+        List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(codigoEntidad);
         if (entidadesAux.isEmpty()) {
             throw new Exception("No existe una Entidad con el código ingresado.");
         } else {
@@ -333,13 +334,18 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         }
         return this.getResultado();
     }
+    
+    public String getNroAleatorio() {
+        return String.valueOf(Math.random());
+    }
 
     public Resource getImprimirCertificado() throws JRException, FileNotFoundException, IOException {
         Resource miRecurso = null;
 
-        try {
-            Date hoy = new Date();
-            Leyenda leyendaAux = this.leyendaFacade.findByAnio(Integer.toString(hoy.getYear()));
+        try {                
+            System.out.println(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            Leyenda leyendaAux = this.leyendaFacade.findByAnio(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            this.buscarEntidad("4492");
             JasperPrint jasperResultado = new BoletaReport().imprimirCertificado(this.getEntidad().getNombre(), this.getEntidad().getCodigo(), 108979L, 98114L, leyendaAux.getNombre());
             byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
             miRecurso = new DPJResource(bites);
