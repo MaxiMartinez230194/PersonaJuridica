@@ -92,8 +92,8 @@ public class BoletaReport {
         return masterPrint;
 
     }
-    
-    public JasperPrint imprimirCertificado(String nombreEntidad, String nroEntidad, Long nroBoleta1, Long nroBoleta2, String leyenda) throws Exception, JRException {
+
+    public JasperPrint imprimirCertificado(String nombreEntidad, String nroEntidad, Long nroBoleta1, Long nroBoleta2, String leyenda, String anio, String codigoSeguridad) throws Exception, JRException {
         try {
             InitialContext context = new InitialContext();
             DataSource dataSource = (DataSource) context.lookup("jdbc/dpj");
@@ -103,8 +103,10 @@ public class BoletaReport {
             parametros.put("nroBoleta1", nroBoleta1);
             parametros.put("nroBoleta2", nroBoleta2);
             parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
-            parametros.put("leyendaProvincia", leyenda);
+            parametros.put("leyendaProvincia", "'" + leyenda + "'");
+            parametros.put("anio", anio);
             parametros.put("nroEntidad", nroEntidad);
+            parametros.put("codigoSeguridad", codigoSeguridad);
             masterReport = (JasperReport) JRLoader.loadObject(url);
             masterPrint = JasperFillManager.fillReport(masterReport, parametros, conexion);
         } catch (NamingException | SQLException | JRException e) {

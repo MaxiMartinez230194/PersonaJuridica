@@ -48,13 +48,13 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
         consulta.setParameter("p1", estado);
         return consulta.getResultList();
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<SolicitudCertificado> findByEntidadAndNroBoleta(Long idEntidad, Long nroBoleta1) {
-        Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.entidad.id = :p1 AND o.nroBoleta1 = :p2");
-        consulta.setParameter("p1", idEntidad);
-        consulta.setParameter("p2", nroBoleta1);
+    public List<SolicitudCertificado> findByNroBoleta(Long nroBoleta1, Long nroBoleta2) {
+        Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.estado = true AND (o.nroBoleta1 = :p1 OR o.nroBoleta2 = :p2)");
+        consulta.setParameter("p1", nroBoleta1);
+        consulta.setParameter("p2", nroBoleta2);
         return consulta.getResultList();
     }
 

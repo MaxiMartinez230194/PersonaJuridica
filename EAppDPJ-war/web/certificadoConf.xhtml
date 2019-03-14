@@ -26,7 +26,7 @@ and open the template in the editor.
                         </h:panelGroup>
                         <span class="glyphicon-chico glyphicon-plus"></span>
                         <h:panelGroup >
-                            <ace:linkButton action="successErrorImprimirCertificado" value="imprimir Certificado"/>
+                            <ace:linkButton actionListener="#{solicitudCertificadoManagedBean.getNroAleatorio()}" value="imprimir Certificado"/>
                         </h:panelGroup>
                     </h:panelGrid>
 

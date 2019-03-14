@@ -10,11 +10,13 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import org.ccpm.dpj.entity.Grupo;
 import org.ccpm.dpj.entity.Menu;
 import org.ccpm.dpj.entity.Usuario;
 import org.ccpm.dpj.facade.UsuarioFacadeLocal;
 import org.ccpm.dpj.utilidad.MiCipher;
+
 /**
  *
  * @author Alvarenga Angel
@@ -22,20 +24,22 @@ import org.ccpm.dpj.utilidad.MiCipher;
 @ManagedBean
 @SessionScoped
 public class WebManagedBean {
+
     @EJB
-    private UsuarioFacadeLocal usuarioFacade;    
+    private UsuarioFacadeLocal usuarioFacade;
     private String nombreUsuario;
-    private String claveAcceso;  
+    private String claveAcceso;
     private String resultado;
-    private String msgSuccessError;   
+    private String msgSuccessError;
     private String title;
     private String images;
-    private Usuario usuario; 
+    private Usuario usuario;
     private String nombreGrupo;
-    private MiCipher cifra=new MiCipher();
-    
-        
-    /** Creates a new instance of WebManagedBean */
+    private MiCipher cifra = new MiCipher();
+
+    /**
+     * Creates a new instance of WebManagedBean
+     */
     public WebManagedBean() {
     }
 
@@ -103,14 +107,14 @@ public class WebManagedBean {
         return usuario;
     }
 
-    public String login() {       
+    public String login() {
         try {
-                
+
             cifra.setPassaEncriptar(this.getClaveAcceso());
-            String pass=cifra.getEncriptado();
+            String pass = cifra.getEncriptado();
             Usuario usuarioAux = usuarioFacade.find(this.getNombreUsuario().toLowerCase(), pass);
             this.setUsuario(usuarioAux);
-            
+
             this.setNombreGrupo(usuarioAux.getGrupos().get(0).getNombre());
             this.setMsgSuccessError("");
             this.setResultado("administracion");
@@ -120,20 +124,21 @@ public class WebManagedBean {
         }
         return resultado;
     }
-    
+
     public void logout() {
         this.setNombreUsuario(null);
         this.setClaveAcceso(null);
         this.setUsuario(null);
+        this.matarBeans();
     }
-       
+
     public void limpiar() {
         this.setNombreUsuario(null);
-        this.setClaveAcceso(null);        
-   }
-    
-   public List<Menu> getMenu() {        
-        List<Menu> listRetorno = new ArrayList<>();        
+        this.setClaveAcceso(null);
+    }
+
+    public List<Menu> getMenu() {
+        List<Menu> listRetorno = new ArrayList<>();
         List<Grupo> listGrupo = this.getUsuario().getGrupos();
         if (!(listGrupo.isEmpty())) {
             for (Grupo grupoAux : listGrupo) {
@@ -144,7 +149,13 @@ public class WebManagedBean {
         listRetorno.addAll(this.getUsuario().getMenus());
         return listRetorno;
     }
-    
+
+    public void matarBeans() {
+        this.removeSessionScopedBean("solicitudCertificadoManagedBean");
+    }
+
+    public static void removeSessionScopedBean(String beanName) {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(beanName);
+    }
+
 }
-
-

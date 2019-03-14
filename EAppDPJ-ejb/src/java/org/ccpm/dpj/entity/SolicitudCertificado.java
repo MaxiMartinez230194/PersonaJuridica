@@ -21,6 +21,10 @@ public class SolicitudCertificado implements Serializable {
     private Long nroBoleta1; //BOLETA DE TASA CERTIFICACIONES
     @Column(name="nro_boleta2")
     private Long nroBoleta2; //BOLETA DE TASA POR TODO TRAMITE
+    @Column(name="codigo_seguridad")
+    private Long codigoSeguridad; //PARA VERIFICAR VALIDEZ DEL CERTIFICADO
+    @Column(name="path_archivo")
+    private String pathArchivo;
     @ManyToOne
     private Entidad entidad;
     @OneToOne
@@ -55,6 +59,21 @@ public class SolicitudCertificado implements Serializable {
         this.entidad = entidad;
     }
 
+    public Long getCodigoSeguridad() {
+        return codigoSeguridad;
+    }
+
+    public void setCodigoSeguridad(Long codigoSeguridad) {
+        this.codigoSeguridad = codigoSeguridad;
+    }
+
+    public String getPathArchivo() {
+        return pathArchivo;
+    }
+
+    public void setPathArchivo(String pathArchivo) {
+        this.pathArchivo = pathArchivo;
+    }
 
     public boolean isEstado() {
         return estado;

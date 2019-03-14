@@ -27,8 +27,8 @@ public interface SolicitudCertificadoFacadeLocal {
     public int count();
 
     public List<SolicitudCertificado> findAll(boolean estado);
-
-    public List<SolicitudCertificado> findByEntidadAndNroBoleta(Long idEntidad, Long nroBoleta);
+    
+    public List<SolicitudCertificado> findByNroBoleta(Long nroBoleta1, Long nroBoleta2);
 
     public List<SolicitudCertificado> findAll(String nombre);
 

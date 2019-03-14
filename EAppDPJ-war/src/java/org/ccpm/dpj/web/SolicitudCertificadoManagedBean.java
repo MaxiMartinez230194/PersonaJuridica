@@ -4,13 +4,18 @@
  */
 package org.ccpm.dpj.web;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.Resource;
@@ -19,6 +24,8 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -34,6 +41,7 @@ import org.ccpm.dpj.entity.Leyenda;
 import org.ccpm.dpj.entity.Usuario;
 import org.ccpm.dpj.facade.BoletaFacadeLocal;
 import org.ccpm.dpj.facade.EntidadFacadeLocal;
+import org.ccpm.dpj.facade.EstadoCertificadoFacadeLocal;
 import org.ccpm.dpj.facade.LeyendaFacadeLocal;
 import org.ccpm.dpj.facade.SolicitudCertificadoFacadeLocal;
 import org.ccpm.dpj.reporte.BoletaReport;
@@ -52,6 +60,8 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
     private EntidadFacadeLocal entidadFacade;
     @EJB
     private LeyendaFacadeLocal leyendaFacade;
+    @EJB
+    private EstadoCertificadoFacadeLocal estadoCertificadoFacade;
     private Long idEntidad;
     private Long idEstadoCertificado;
     private Long idBoleta1;
@@ -59,6 +69,8 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
     private Long nroBoleta1;
     private Long nroBoleta2;
     private String codigoEntidad;
+    private String pathCertificadoEnviar;
+    private String codigoSeguridad;
 
     private Date fecha;
     private Entidad entidad;
@@ -121,6 +133,22 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
     public void setCodigoEntidad(String codigoEntidad) {
         this.codigoEntidad = codigoEntidad;
+    }
+
+    public String getCodigoSeguridad() {
+        return codigoSeguridad;
+    }
+
+    public void setCodigoSeguridad(String codigoSeguridad) {
+        this.codigoSeguridad = codigoSeguridad;
+    }
+
+    public String getPathCertificadoEnviar() {
+        return pathCertificadoEnviar;
+    }
+
+    public void setPathCertificadoEnviar(String pathCertificadoEnviar) {
+        this.pathCertificadoEnviar = pathCertificadoEnviar;
     }
 
     public Long getNroBoleta1() {
@@ -242,8 +270,12 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             throw new Exception("No existe una Entidad con el código ingresado.");
         } else {
             for (Entidad entidadAux : entidadesAux) {
-                this.setIdEntidad(entidadAux.getId());
-                this.setEntidad(entidadAux);
+                if (isValidEmailAddress(entidadAux.getCorreo())) {
+                    this.setIdEntidad(entidadAux.getId());
+                    this.setEntidad(entidadAux);
+                } else {
+                    throw new Exception("La entidad posee un correo electrónico incorrecto, comuníquese con los administradores del sistema.");
+                }
                 System.out.println(entidadAux.getNombre());
             }
         }
@@ -256,6 +288,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             if (!itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
                 throw new Exception("El número de la boleta ingresada no pertenece a la TASA CERTIFICACIONES (C/U).");
             } else {
+                        
                 this.setBoleta1(boletaAux);
             }
         } else {
@@ -277,18 +310,25 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         }
     }
 
-    public void verificarEstadoSolicitud(Long idEntidad, Long nroBoleta1) throws Exception {
-        List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByEntidadAndNroBoleta(idEntidad, nroBoleta1);
+    public void verificarEstadoSolicitud(Long nroBoleta1, Long nroBoleta2) throws Exception {
+        List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByNroBoleta(nroBoleta1, nroBoleta2);
         if (!solicitudesAux.isEmpty()) {
             for (SolicitudCertificado solicitudAux : solicitudesAux) {
                 switch (solicitudAux.getEstadoCertificado().getId().intValue()) {
                     case 1:
                         throw new Exception("Ya realizó una SOLICITUD con los datos ingresados. Dentro de las 24 hs. hábiles se enviará el certificado a su correo electrónico.");
                     case 2:
-                        throw new Exception("Ya se ha EMITIDO el certificado para esa Entidad con esos números de Boletas. Verifique su correo electrónico.");
+                        throw new Exception("Ya se ha EMITIDO un certificado con esos números de Boletas. Verifique el correo electrónico de su entidad.");
                 }
             }
         }
+    }
+    
+
+    public boolean verificarPagoBoletas(Long idBoleta1, Long idBoleta2) {
+        Boleta boletaCertifiaciones = this.boletaFacade.find(idBoleta1);
+        Boleta boletaTodoTramite = this.boletaFacade.find(idBoleta2);
+        return boletaCertifiaciones.getEstadoBoleta().getId() == 3 && boletaTodoTramite.getEstadoBoleta().getId() == 3;
     }
 
     public String solicitar() {
@@ -305,24 +345,24 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             /*Busca la boleta de todo tramite con el numero ingresado, si encuentra setea en Boleta2*/
             this.buscarBoletaTodoTramite(this.getNroBoleta2());
 
-            /*Verificamos que no se haya emitido ya un certificado para esa entidad con esa boleta*/
-            this.verificarEstadoSolicitud(this.getIdEntidad(), this.getNroBoleta1());
+            /*Verificamos que no se haya emitido ya un certificado para esa entidad con esas boletas*/
+            this.verificarEstadoSolicitud(this.getNroBoleta1(), this.getNroBoleta2());
 
-            /*Si las boletas 1 y 2 están pagadas envia el email con el certificado.*/
-            if (this.getBoleta1().getEstadoBoleta().getId() == 3 && this.getBoleta2().getEstadoBoleta().getId() == 3) {
+            this.solicitudCertificadoFacade.solicitar(this.getIdEntidad(), this.getNroBoleta1(), this.getNroBoleta2());
 
-                System.out.println("Ya pagó");
-//                MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
-//                        "Hola, aquí está su certificado. ", "urlArchivo");
-//
-//                hiloMail.start();
-            } else {
-                System.out.println("No pagó todavia");
-                this.solicitudCertificadoFacade.solicitar(this.getIdEntidad(), this.getNroBoleta1(), this.getNroBoleta2());
+            this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito");
+            /*Si las boletas 1 y 2 están pagadas envia el email con el certificado. Caso que no se hayan pagado se genera una solicitud*/
+            if (this.verificarPagoBoletas(this.getBoleta1().getId(), this.getBoleta2().getId())) {
+                this.getImprimirCertificado();
+                MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
+                        "Hola, aquí está su certificado. \nMuchas gracias por cumplir con nuestros requisitos, le deseamos una linda jornada.", this.getPathCertificadoEnviar());
+
+                hiloMail.start();
+                this.setMsgSuccessError("El certificado ha sido generado con éxito y se ha enviado al correo electrónico de la entidad.");
+
             }
 
             this.setResultado("successErrorSolicitudCertificado");
-            this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito");
             this.setTitle("Proceso Completo...");
             this.setImages("glyphicon glyphicon-ok-circle");
             this.limpiar();
@@ -334,26 +374,54 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         }
         return this.getResultado();
     }
-    
+
     public String getNroAleatorio() {
-        return String.valueOf(Math.random());
+        Random rnd = new Random();
+        int numero = (int) (rnd.nextDouble() * 9999 + 1000);
+        return String.valueOf(numero);
     }
 
     public Resource getImprimirCertificado() throws JRException, FileNotFoundException, IOException {
         Resource miRecurso = null;
 
-        try {                
-            System.out.println(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+        try {
+            /*Se busca la leyenda del año*/
             Leyenda leyendaAux = this.leyendaFacade.findByAnio(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
-            this.buscarEntidad("4492");
-            JasperPrint jasperResultado = new BoletaReport().imprimirCertificado(this.getEntidad().getNombre(), this.getEntidad().getCodigo(), 108979L, 98114L, leyendaAux.getNombre());
+            this.setEstadoCertificado(this.estadoCertificadoFacade.find(2L)); //ESTADO EMITIDO
+            /*seteo el path para guardar el certificado*/
+            this.setPathCertificadoEnviar("/home/DatosDPJ/Certificado " + this.getEntidad().getCodigo() + this.getNroBoleta1() + ".pdf");
+            /*agrega codigo de seguridad al reporte*/
+            List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByNroBoleta(this.getNroBoleta1(), this.getNroBoleta2());
+            SolicitudCertificado soliAux = solicitudesAux.get(0);
+            this.setCodigoSeguridad(this.getNroAleatorio());
+            soliAux.setCodigoSeguridad(Long.parseLong(this.getCodigoSeguridad()));
+            soliAux.setPathArchivo(this.getPathCertificadoEnviar());
+            soliAux.setEstadoCertificado(this.getEstadoCertificado());
+            this.solicitudCertificadoFacade.edit(soliAux);
+
+            JasperPrint jasperResultado = new BoletaReport().imprimirCertificado(this.getEntidad().getNombre(), this.getEntidad().getCodigo(), this.getNroBoleta1(), this.getNroBoleta2(), leyendaAux.getNombre(), leyendaAux.getAnio(), this.getCodigoSeguridad());
             byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
+            /*Guarda certificado en DatosDPJ*/
+            OutputStream out = new FileOutputStream(this.getPathCertificadoEnviar());
+            out.write(bites);
+            out.close();
             miRecurso = new DPJResource(bites);
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         return miRecurso;
+    }
+
+    public boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            result = false;
+        }
+        return result;
     }
 
     @Override

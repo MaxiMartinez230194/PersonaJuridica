@@ -100,8 +100,8 @@ public class MailThread extends Thread {
     }
 
     public void enviarMail(boolean enviar, String correoDest, String asunto, String textoMensaje, String pathArchivo) throws Exception {
-        String correoEmisor = "maximartinez2394@gmail.com";
-        String pass = "maxi123-";
+        String correoEmisor = "ccpmisiones@gmail.com";
+        String pass = "aguantejavaypostgres";
         try {
 
             if (enviar) {
@@ -110,6 +110,7 @@ public class MailThread extends Thread {
                 Properties props = new Properties();
                 props.setProperty("mail.smtp.host", "smtp.gmail.com");
                 props.setProperty("mail.smtp.starttls.enable", "true");
+                props.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
                 props.setProperty("mail.smtp.port", "587");
                 props.setProperty("mail.smtp.user", correoEmisor);    // MODIFICAR
                 props.setProperty("mail.smtp.auth", "true");
@@ -162,7 +163,7 @@ public class MailThread extends Thread {
                 System.out.println("El destinatario no es correcto o no tiene direccion disponible. ");
             }
         } catch (Exception e) {
-            throw new Exception("No se pudo envial el mail. Se enviara mas tarde.");
+            throw new Exception(e.toString());
         }
 
     }
