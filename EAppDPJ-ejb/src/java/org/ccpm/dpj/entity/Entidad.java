@@ -6,6 +6,7 @@ package org.ccpm.dpj.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -24,6 +25,8 @@ public class Entidad implements Serializable {
     private Date fechaAlta;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaBaja;
+    @OneToMany(mappedBy = "entidad")
+    private List<SolicitudCertificado> solicitudesCertificado;
     @OneToOne
     Estado estadoEntidad;
     @OneToOne
@@ -56,8 +59,6 @@ public class Entidad implements Serializable {
         this.nombreReserva = nombreReserva;
     }
     
-    
-
     public String getDni() {
         return dni;
     }
@@ -65,8 +66,14 @@ public class Entidad implements Serializable {
     public void setDni(String dni) {
         this.dni = dni;
     }
-    
-    
+
+    public List<SolicitudCertificado> getSolicitudesCertificado() {
+        return solicitudesCertificado;
+    }
+
+    public void setSolicitudesCertificado(List<SolicitudCertificado> solicitudesCertificado) {
+        this.solicitudesCertificado = solicitudesCertificado;
+    }
     
     public Date getFechaAlta() {
         return fechaAlta;
