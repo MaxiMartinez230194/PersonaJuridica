@@ -31,7 +31,7 @@ and open the template in the editor.
                        <table> 
                         <tr>
                                 <td align="right">                                
-                                    <h:outputLabel value="Fecha emisión desde:"/>
+                                    <h:outputLabel value="Fecha Depósito desde:"/>
                                 </td>
                                 <td align="left">     
                                     <ace:dateTimeEntry value="#{parteDiarioManagedBean.fechaDesdeBusqueda}"
@@ -44,7 +44,7 @@ and open the template in the editor.
                                                        size="20"/>
                                 </td>                        
                                 <td align="right">                                
-                                    <h:outputLabel value="Fecha emisión hasta:"/>
+                                    <h:outputLabel value="Fecha Depósito hasta:"/>
                                 </td>
                                 <td align="left">
                                     <ace:dateTimeEntry value="#{parteDiarioManagedBean.fechaHastaBusqueda}"
@@ -56,6 +56,9 @@ and open the template in the editor.
                                                        labelPosition="inField"
                                                        size="20"/>
                                 </td>
+                                
+                                    
+                           
                             </tr>
                         </table>
                          <div align="right" >
@@ -67,7 +70,13 @@ and open the template in the editor.
                       
 
                     </ace:panel>
-
+                                    <td align="right">
+                                        
+                                    </td>
+                                    <td align="left">
+                                        <ace:textEntry id="nroComision" label="Comisión Banco" labelPosition="left" value="#{parteDiarioManagedBean.comision}" required="false" />
+                                    </td>
+                                    
                     <ace:dataTable id="listParteDiario" value="#{parteDiarioManagedBean.listElements}" var="item" paginator="true" paginatorPosition="bottom" rows="10" class="panel-buttons">
 
                          <ace:column id="idNombreParte" headerText="Nombre Archivo" style="width: 7%">

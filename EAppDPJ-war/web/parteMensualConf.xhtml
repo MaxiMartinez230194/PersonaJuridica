@@ -43,9 +43,22 @@ and open the template in the editor.
                              <td align="right">                                
                                     <h:outputLabel value="Año:"/>
                                 </td>
-                                <td align="left">
+                            <td align="left">
                                     <ace:maskedEntry value="#{parteDiarioManagedBean.anio}" mask="9999" />
-                                </td>
+                            </td>
+                             
+                            <td align="right">
+                                <h:outputLabel value="(*) Comisión" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="nroComision" label="nro" value="#{parteDiarioManagedBean.comisionParteMensual}" required="false"/>
+                                                                   
+                                
+                            </td>
+                            <td align="left">
+                                <ace:message id="nroComisionMsg" for="nroComision" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        
                         </table>
                          <div align="right" >
                             <h:panelGrid  columns="2">

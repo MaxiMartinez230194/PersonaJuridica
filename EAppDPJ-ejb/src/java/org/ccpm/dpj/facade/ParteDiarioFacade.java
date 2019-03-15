@@ -51,7 +51,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
         query.append("select object(o) FROM ParteDiario as o WHERE o.estado = true");        
         
         if(fechaDesde != null && fechaHasta != null){
-            query.append(" and o.fecha BETWEEN :start AND :end");
+            query.append(" and o.fechaPago BETWEEN :start AND :end");
         }
                 
         //System.out.println("facade boleta--> "+query);

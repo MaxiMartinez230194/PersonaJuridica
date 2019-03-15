@@ -85,8 +85,10 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     private int numero;
     //cambios 21 feb 2019
     private BigDecimal comisionBanco;
-    //cambios 7 mar 2019
-    private String nroCuenta;
+    private BigDecimal comisionBancoMensual;
+    
+    private Double comision;
+    private Double comisionParteMensual;
     List<String> Meses = new ArrayList<String>();
       
     
@@ -129,8 +131,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
                     if (accionAux.getNombre().equalsIgnoreCase("detalleParteDiario")) {
                         this.setDetalle(true);
                     }
-                    //System.out.println("parteDiarioMB "+accionAux.getNombre());
-                    
+                   
                 }
                 
             }
@@ -139,24 +140,48 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         }
     }
 
-    public String getNroCuenta() {
-        return nroCuenta;
+    public Double getComisionParteMensual() {
+        return comisionParteMensual;
     }
 
-    public void setNroCuenta(String nroCuenta) {
-        this.nroCuenta = nroCuenta;
+    public void setComisionParteMensual(Double comisionParteMensual) {
+        this.comisionParteMensual = comisionParteMensual;
     }
 
-    
-    
-    public BigDecimal getComisionBanco() {
-        Double comisionBancoMacro=0.006735;
-        BigDecimal com = new BigDecimal(comisionBancoMacro);
+    public BigDecimal getComisionBancoMensual() {
+        BigDecimal com = new BigDecimal(comisionParteMensual==null?0.00673:comisionParteMensual);//controla el null
         com = com.setScale(6, RoundingMode.HALF_UP);
-        System.out.println("comision: "+com);
         return com;
     }
 
+    public void setComisionBancoMensual(BigDecimal comisionBancoMensual) {
+        this.comisionBancoMensual = comisionBancoMensual;
+    }
+
+    
+    
+    
+   
+
+    public void setComision(Double comision) {
+        this.comision = comision;
+    }
+    
+     public Double getComision() {
+        
+        return comision;
+    }
+    
+
+    public BigDecimal getComisionBanco() {
+        BigDecimal com = new BigDecimal(comision==null?0.00673:comision);//controla el null
+        com = com.setScale(6, RoundingMode.HALF_UP);
+        return com;
+    }
+
+    
+    
+    
     public void setComisionBanco(BigDecimal comisionBanco) {
         this.comisionBanco = comisionBanco;
     }
@@ -731,7 +756,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         
         try {
                
-                JasperPrint jasperResultado = new BoletaReport().imprimirReporteMensual(this.Mes,this.Anio,this.getComisionBanco());
+                JasperPrint jasperResultado = new BoletaReport().imprimirReporteMensual(this.Mes,this.Anio,this.getComisionBancoMensual());
                 byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
                 miRecurso = new DPJResource(bites);
             
