@@ -85,7 +85,9 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     private int numero;
     //cambios 21 feb 2019
     private BigDecimal comisionBanco;
-     List<String> Meses = new ArrayList<String>();
+    //cambios 7 mar 2019
+    private String nroCuenta;
+    List<String> Meses = new ArrayList<String>();
       
     
    
@@ -137,6 +139,16 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         }
     }
 
+    public String getNroCuenta() {
+        return nroCuenta;
+    }
+
+    public void setNroCuenta(String nroCuenta) {
+        this.nroCuenta = nroCuenta;
+    }
+
+    
+    
     public BigDecimal getComisionBanco() {
         Double comisionBancoMacro=0.006735;
         BigDecimal com = new BigDecimal(comisionBancoMacro);
