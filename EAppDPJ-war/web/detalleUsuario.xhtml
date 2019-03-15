@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleUsuario" styleClass="form" title=" ">
+
+                <ace:panel header="#{msg.detailsUsuario}">
+
+                    <table border="0" cellspacing="5">
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.id}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.id}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Apellido:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.apellido}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Nombre:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.nombre}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.uss}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.nombreUsuario}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.pass}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.claveAcceso}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.fechaAlta}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.fechaAlta}" >
+                                    <f:convertDateTime pattern="dd/mm/yyyy"/>
+                                </h:outputLabel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.fechaModif}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.fechaModificacion}" >
+                                    <f:convertDateTime pattern="dd/mm/yyyy"/>
+                                </h:outputLabel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.ultimoLogin}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputLabel value="#{usuarioManagedBean.usuario.ultimoLogin}" >
+                                    <f:convertDateTime pattern="dd/mm/yyyy"/>
+                                </h:outputLabel>
+                            </td>
+                        </tr>
+                    </table>
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="usuarioConf" value="- Volver -" />
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

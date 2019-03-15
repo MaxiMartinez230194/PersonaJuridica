@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleBoleta" styleClass="form" title=" ">
+
+                <ace:panel header="#{msg.detailsBoleta}" >
+
+
+                    <table border="0" cellspacing="5">
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="#{msg.id}"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{boletaManagedBean.boleta.id}"/>                     
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Nro. Correlativo:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{boletaManagedBean.boleta.nroCorrelativo}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Fecha Emisión:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{boletaManagedBean.boleta.fechaEmision}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/>
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Fecha Pago:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{boletaManagedBean.boleta.fechaPago}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/>
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Estado:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{boletaManagedBean.boleta.estadoBoleta.nombre}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Monto Total:"/>
+                            </td>
+                            <td align="left">
+                                <h:outputText value="#{boletaManagedBean.boleta.total}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="Tasas:" style="font-size: 1.5em;"/>
+                            </td>                        
+                        </tr>
+                    </table> 
+
+                    <ace:dataTable id="list" value="#{boletaManagedBean.boleta.items}" var="item" rows="20"  style="margin-top: 10px;">
+
+                        <ace:column id="name" headerText="#{msg.nameT}" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellName" value="#{item.nombreTasa}"/>
+                            </center>
+                        </ace:column>
+                        
+                        <ace:column id="monto" headerText="#{msg.montoT}" style="width: 7%">
+                            <center>
+                                <h:outputText id="cellMonto" value="#{item.monto}"/>
+                            </center>
+                        </ace:column>
+                       
+                    </ace:dataTable>
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="boletaConf" value="- Volver -" />
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

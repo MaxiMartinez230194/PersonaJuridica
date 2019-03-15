@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components" 
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleAsociacion" styleClass="form" title=" ">
+                
+                <ace:panel header="Detalle Asociación">
+                <table border="0" cellspacing="5">
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.id}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.id}" />                     
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.name}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.nombre}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.codigo}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.codigo}" />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.nombreReserva}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.nombreReserva}" />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.dni}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.dni}" />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.telefono}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.telefono}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.correo}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.correo}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.paginaWeb}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.paginaWeb}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.fechaAlta}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.fechaAlta}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                            </h:outputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.direccion}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.direccion}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.municipio}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.municipio.leyenda}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel value="#{msg.estadoAsociacion}"/>
+                            </strong>
+
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{asociacionManagedBean.estado.leyenda}" />
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td align="right">
+                            <strong>
+                                <h:outputLabel rendered="#{asociacionManagedBean.estado.leyenda == 'RESERVADO'}" value="#{msg.fechaVencimiento}"/>
+                            </strong>
+                        </td>
+                        <td align="left">
+                            <h:outputText rendered="#{asociacionManagedBean.estado.leyenda == 'RESERVADO'}" value="#{asociacionManagedBean.getFechaVencimiento(asociacionManagedBean.fechaAlta)}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                            </h:outputText>
+                        </td>
+                    </tr>
+                </table>
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="asociacionConf" value="- Volver -" style="color: #08446c;"/>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

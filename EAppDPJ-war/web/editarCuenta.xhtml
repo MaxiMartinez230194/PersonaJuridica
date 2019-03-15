@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">      
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formEditarCuenta" title=" ">
+                <ace:panel id="editarCuenta" header="#{msg.editCuenta}">
+                     <table border="0" cellspacing="5" class="panel-buttons">
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) #{msg.denominacion}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="denominacion" label="denominacion" value="#{cuentaManagedBean.denominacion}" required="true">
+                                    <ace:ajax render="@this denominacion denominacionMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="denominacionMsg" for="denominacion" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) #{msg.nro}" />
+                            </td>
+                            <td align="left">
+                                <ace:textEntry id="nro" label="nro" value="#{cuentaManagedBean.nro}" required="true">
+                                    <ace:ajax render="@this nro nroMsg" event="blur"/>                                
+                                </ace:textEntry>   
+                            </td>
+                            <td align="left">
+                                <ace:message id="nroMsg" for="nro" initEffect="slide" changeEffect="shake"/> 
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) #{msg.tipoCuenta}" />
+                            </td>
+                            <td align="left">
+                                <ace:simpleSelectOneMenu id="tipoCuentaNew" value="#{cuentaManagedBean.idTipoCuenta}" label="tipoCuenta"  required="true" style="width: 353px;">
+                                    <f:selectItem  itemValue="0"  itemLabel="NINGUNO" noSelectionOption="true"/>
+                                    <f:selectItems value="#{cuentaManagedBean.selectItemsTipoCuenta}" /> 
+                                    <ace:ajax render="@this tipoCuentaNew tipoCuentaNewMsg" event="blur"/> 
+                                </ace:simpleSelectOneMenu>  
+                            </td>
+                            <td align="left">
+                                <ace:message id="tipoCuentaNewMsg" for="tipoCuentaNew" initEffect="slide" changeEffect="shake"/>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td align="right">
+                                <h:outputLabel value="(*) #{msg.banco}" />
+                            </td>
+                            <td align="left">
+                                <ace:simpleSelectOneMenu id="bancoNew" value="#{cuentaManagedBean.idBanco}" label="bancoNew"  required="true" style="width: 353px;">
+                                    <f:selectItem  itemValue="0"  itemLabel="NINGUNO" noSelectionOption="true"/>
+                                    <f:selectItems value="#{cuentaManagedBean.selectItemsBanco}" /> 
+                                    <ace:ajax render="@this bancoNew bancoNewMsg" event="blur"/> 
+                                </ace:simpleSelectOneMenu>  
+                            </td>
+                            <td align="left">
+                                <ace:message id="bancoNewMsg" for="bancoNew" initEffect="slide" changeEffect="shake"/>
+                            </td>
+                        </tr>
+                        
+                    </table>                     
+                    
+                    <h:inputHidden value="#{cuentaManagedBean.id}" />
+                    
+                    <h:panelGrid id="buttonGrid" columns="2" class="panel-buttons">
+                        <ace:pushButton id="save" value="#{msg.saveEdit}" action="#{cuentaManagedBean.guardarEdicion}"/>                        
+                        <ace:pushButton id="cancel" value="#{msg.cancel}" action="cuentaConf" immediate="true" actionListener="#{cuentaManagedBean.limpiar()}"/>
+                    </h:panelGrid>
+                </ace:panel>                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

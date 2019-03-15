@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:botDetect="botDetectFacelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+    <h:head>
+        <title>.: DIRECCION DE PERSONAS JURIDICAS :.</title>
+        <link rel="stylesheet" href="css/tema.css" type="text/css"/>
+        <link rel="stylesheet" href="css/cssCCPM.css" type="text/css"/>
+        <link rel="shortcut icon" href="images/favicon.png"/>
+
+    </h:head>
+    <h:body>
+        <f:loadBundle basename="org.ccpm.dpj.ui.labelsCCPM" var="msg"/>        
+        <div id="top" class="banner-top" title=" " align="right">
+            <h:form title=" " id="formLogin">
+                <h:outputText value="Usted no se ha identificado."/>  
+                <ace:linkButton value="(Entrar)" action="login" />
+            </h:form>    
+
+
+        </div>
+        <div id="conten-top" class="content-top" title=" ">
+
+            <h:form title=" " id="formTabla" style="" >
+
+                <ace:dataTable id="list" value="#{boletaGenManagedBean.listaTasas}"  var="item" paginator="true" paginatorPosition="bottom" class="panel-buttons">
+                    <ace:column id="select" headerText="ITEM" style="width: 5%">
+                        <div class="panel-column-data-left">
+                            <center>
+                                <h:selectBooleanCheckbox id="seleccion"  value="#{item.select}"  >
+                                    <f:ajax execute="@this" render="formTabla:total" listener="#{boletaGenManagedBean.getSeleccionar()}" />
+                                </h:selectBooleanCheckbox>
+                            </center>
+                        </div>                            
+                    </ace:column>
+                    <ace:column id="nombre" headerText="TASAS SEGUN LEY N° 3262" style="width: 75%">
+                        <div class="panel-column-data-left">
+                            <h:outputText id="cellNombre" value="#{item.nombre}"/>
+                        </div>                            
+                    </ace:column>
+                    <ace:column id="monto" headerText="MONTO $" style="width: 75%">
+                        <div align="center">
+                            <h:outputText id="cellMonto" value="#{item.monto}"/>
+                        </div>                            
+                    </ace:column>
+                </ace:dataTable>
+                <ace:dataTable id="total" value="TOTAL" rows="-1" var="total"  style="margin-top: 0px; width: 100%; right: 0; border: none">
+                    <ace:column style="width: 5%"/>
+
+                    <ace:column id="totall" headerText="TOTAL" style="text-align: left; font-size: 1.6em; width: 75%; margin-right: 0.5px"/>
+
+
+                    <ace:column headerText="#{boletaGenManagedBean.totalMostrar}" style="width: 30%; font-size: 1.4em"/>
+                </ace:dataTable>
+
+                <div id="prefooter" align="left" >
+                    <h:outputLabel>Código de Verificación:</h:outputLabel> 
+                    <br/>
+                    <botDetect:jsfCaptcha id="captcha" userInputID="captchaCode" binding="#{boletaGenManagedBean.captcha}"/>
+                    <h:inputText value="#{boletaGenManagedBean.captchaCode}"/>
+                    <h:outputText value="CÓDIGO DE VERIFICACIÓN INCORRECTO" rendered="#{boletaGenManagedBean.correctLabelVisible}" style="color: #cc0000"/>
+                    <br />
+                    <p>
+                        <ace:panel id="panelBotonGenerar" style="border-color: #FFF" >  
+                            <h:commandButton value="Generar Boleta" action="#{boletaGenManagedBean.crear()}" style="margin-right:0.5%;" styleClass="buttonLogin"/>
+                            <h:commandButton value="#{msg.cancel}" action="index" actionListener="#{boletaGenManagedBean.limpiar()}" immediate="true" styleClass="buttonLogin"/>
+                            <ace:submitMonitor id="submitMonitorPage"
+                                       for=":formTabla:panelBotonGenerar"
+                                       blockUI="@all"
+                                       autoCenter="true"
+                                       />
+                        </ace:panel>
+                        
+                    </p>
+                </div> 
+                
+            </h:form>
+        </div>
+
+        <div id="footer" class="footer-top" title=" ">
+            <ui:include src="footer.xhtml"/>
+        </div>  
+    </h:body>
+</html>

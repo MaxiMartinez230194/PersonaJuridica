@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ace="http://www.icefaces.org/icefaces/components" 
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="./layout.xhtml">
+        <ui:define name="content">
+            <h:form id="formDetalleEntidad" styleClass="form" title=" ">
+                
+                <ace:panel header="#{msg.detailsEntidad}">
+                <table border="0" cellspacing="5">
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="#{msg.id}"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{entidadManagedBean.id}" />                     
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="#{msg.name}"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{entidadManagedBean.nombre}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="#{msg.codigo}"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{entidadManagedBean.codigo}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="#{msg.fechaAlta}"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{entidadManagedBean.fechaAlta}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es_AR" timeZone="America/Argentina/Buenos_Aires"/> 
+                            </h:outputText>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td align="right">
+                            <h:outputLabel value="#{msg.domicilio}"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{entidadManagedBean.domicilio}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            <h:outputLabel value="#{msg.municipio}"/>
+                        </td>
+                        <td align="left">
+                            <h:outputText value="#{entidadManagedBean.municipio.leyenda}" />
+                        </td>
+                    </tr>
+                </table>
+                </ace:panel>
+                <br/>
+                <div align="center">
+                    <ace:linkButton action="entidadConf" value="- Volver -" style="color: #08446c;"/>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+

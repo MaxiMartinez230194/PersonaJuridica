@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:icecore="http://www.icefaces.org/icefaces/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+    <h:head>
+        <title>.: DIRECCION DE PERSONAS JURIDICAS :.</title>
+        <link rel="stylesheet" href="css/tema.css" type="text/css"/>
+        <link rel="stylesheet" href="css/cssCCPM.css" type="text/css"/>
+        <link rel="shortcut icon" href="images/favicon.png"/>
+        
+
+    </h:head>
+    <h:body>       
+        <f:loadBundle basename="org.ccpm.dpj.ui.labelsCCPM" var="msg"/> 
+        <div id="top" class="banner-top" title=" ">
+            <ui:include src="banner.xhtml"/>
+        </div>
+        <div id="globalNav" class="globalNav" title=" ">
+            <ui:include src="globalMenu.xhtml"/>
+        </div>  
+        <div id="content" class="content" title=" ">
+                <ui:insert name="content"/>
+            </div>
+        <div id="footer" class="footer-top" title=" ">
+            <ui:include src="footer.xhtml"/>
+        </div>        
+    </h:body>
+</html>
