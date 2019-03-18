@@ -209,7 +209,10 @@ a .yui-button .yui-link-button .ui-button .ui-widget-{
     color:#fff;
 }
 
-/* Interaction Cues
+/*Para columnas certificadoWEB*/
+
+
+
 ----------------------------------*/
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
@@ -1457,5 +1460,37 @@ border: none !important;
 
 .semaforoVerde:hover{
 background:  url("../images/indicador.png") -225px 35px !important;
+
+}
+.botonGrande button{
+    border: none !important;
+    width: 200px !important;
+    height: 230px !important;
+}
+
+.botonGrande .ui-button{
+    display: inline-block !important;
+    vertical-align: top !important;
+    border-radius: 2% !important;
+    margin-bottom: 20px !important;
+    color: #1D3D88 !important;
+    cursor: pointer !important;
+    font-size: 3em !important;
+    outline: 0 !important;
+    /*border-radius: 50% !important;  */
+    background: #ececec !important;
+    transition: box-shadow .25s ease !important;
+    transition: .2s linear !important;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, .2);
+}
+
+
+.botonGrande .ui-state-hover,
+.ui-state-focus{
+    /*background: #3CB096 !important;*/
+    background: #1D3D88 !important;
+    font-weight: bold;
+    color: #ffffff !important;
+    -webkit-box-shadow: 0px 0px 10px 4px rgba(102,102,102,0.5);
 
 }

@@ -4,16 +4,17 @@
  */
 package org.ccpm.dpj.web;
 
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.Resource;
@@ -39,9 +41,13 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.ccpm.dpj.entity.*;
 import org.ccpm.dpj.facade.BoletaFacadeLocal;
+import org.ccpm.dpj.facade.EstadoCertificadoFacadeLocal;
+import org.ccpm.dpj.facade.LeyendaFacadeLocal;
 import org.ccpm.dpj.facade.ParteDiarioFacadeLocal;
+import org.ccpm.dpj.facade.SolicitudCertificadoFacadeLocal;
 import org.ccpm.dpj.reporte.BoletaReport;
 import org.ccpm.dpj.utilidad.DPJResource;
+import org.ccpm.dpj.utilidad.MailThread;
 import org.icefaces.ace.component.fileentry.FileEntry;
 import org.icefaces.ace.component.fileentry.FileEntryEvent;
 import org.icefaces.ace.component.fileentry.FileEntryResults;
@@ -52,32 +58,39 @@ import org.icefaces.ace.component.fileentry.FileEntryResults;
  */
 @ManagedBean
 @SessionScoped
-public class ParteDiarioManagedBean extends UtilManagedBean implements Serializable{
+public class ParteDiarioManagedBean extends UtilManagedBean implements Serializable {
+
     @EJB
     private ParteDiarioFacadeLocal parteDiarioFacade;
     @EJB
     private BoletaFacadeLocal boletaFacade;
+    @EJB
+    private LeyendaFacadeLocal leyendaFacade;
+    @EJB
+    private EstadoCertificadoFacadeLocal estadoCertificadoFacade;
+    @EJB
+    private SolicitudCertificadoFacadeLocal solicitudCertificadoFacade;
     private List<ParteDiario> ListparteDiario;
     private ParteDiario parteDiario;
     private Date fechaParteDiario;
     private String adjunto;
     private String contenidoArchivo;
-    private boolean mostrarTextArea=true;
+    private boolean mostrarTextArea = true;
     private String error;
     private String totalReg;
     private Date fechaDesdeBusqueda;
     private Date fechaHastaBusqueda;
-    private List <ActionItem> lstActionItems = new ArrayList <ActionItem>();
-    private Resource resource,resource2;
+    private List<ActionItem> lstActionItems = new ArrayList<ActionItem>();
+    private Resource resource, resource2;
     private String path;
-    private boolean verLink=false;
+    private boolean verLink = false;
     private String archivo;
     private List<ParteDiario> listaMesParteDiario;
     private int Mes;
-    private int Anio=Integer.parseInt(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
-    private Boolean verTabla=false;
-    private Boolean verLinkReporte=false;
-    private Boolean verLinkReporteMensual=false;
+    private int Anio = Integer.parseInt(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+    private Boolean verTabla = false;
+    private Boolean verLinkReporte = false;
+    private Boolean verLinkReporteMensual = false;
     private Date fechaPagoReporte;
     private Date fechaPago;
     private Date fechaDeposito;
@@ -86,15 +99,23 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     //cambios 21 feb 2019
     private BigDecimal comisionBanco;
     private BigDecimal comisionBancoMensual;
-    
+
     private Double comision;
     private Double comisionParteMensual;
     List<String> Meses = new ArrayList<String>();
-      
-    
-   
-    
-    /** Creates a new instance of ParteDiarioTasaManagedBean */
+
+    //PARA SOLICITUDES
+    private EstadoCertificado estadoCertificado;
+    private String pathCertificadoEnviar;
+
+    private Entidad entidad;
+    private Long nroBoleta1;
+    private Long nroBoleta2;
+    private String codigoSeguridad;
+
+    /**
+     * Creates a new instance of ParteDiarioTasaManagedBean
+     */
     public ParteDiarioManagedBean() {
     }
 
@@ -104,13 +125,14 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         if (sessionBean != null) {
             try {
                 this.prepararAcciones(sessionBean.getUsuario());
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
         }
     }
-    
+
     public void prepararAcciones(Usuario usuario) throws Exception {
         try {
-            List <Grupo> listGrupo = usuario.getGrupos();
+            List<Grupo> listGrupo = usuario.getGrupos();
             if (!(listGrupo.isEmpty())) {
                 for (Grupo grupoAux : listGrupo) {
                     this.lstActionItems.addAll(grupoAux.getAcciones());
@@ -131,9 +153,9 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
                     if (accionAux.getNombre().equalsIgnoreCase("detalleParteDiario")) {
                         this.setDetalle(true);
                     }
-                   
+
                 }
-                
+
             }
         } catch (Exception e) {
             throw new Exception("Error al recuperar las acciones del usuario");
@@ -149,7 +171,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     }
 
     public BigDecimal getComisionBancoMensual() {
-        BigDecimal com = new BigDecimal(comisionParteMensual==null?0.00673:comisionParteMensual);//controla el null
+        BigDecimal com = new BigDecimal(comisionParteMensual == null ? 0.00673 : comisionParteMensual);//controla el null
         com = com.setScale(6, RoundingMode.HALF_UP);
         return com;
     }
@@ -158,35 +180,72 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.comisionBancoMensual = comisionBancoMensual;
     }
 
-    
-    
-    
-   
+    public EstadoCertificado getEstadoCertificado() {
+        return estadoCertificado;
+    }
+
+    public void setEstadoCertificado(EstadoCertificado estadoCertificado) {
+        this.estadoCertificado = estadoCertificado;
+    }
+
+    public String getPathCertificadoEnviar() {
+        return pathCertificadoEnviar;
+    }
+
+    public void setPathCertificadoEnviar(String pathCertificadoEnviar) {
+        this.pathCertificadoEnviar = pathCertificadoEnviar;
+    }
+
+    public Entidad getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(Entidad entidad) {
+        this.entidad = entidad;
+    }
+
+    public Long getNroBoleta1() {
+        return nroBoleta1;
+    }
+
+    public void setNroBoleta1(Long nroBoleta1) {
+        this.nroBoleta1 = nroBoleta1;
+    }
+
+    public Long getNroBoleta2() {
+        return nroBoleta2;
+    }
+
+    public void setNroBoleta2(Long nroBoleta2) {
+        this.nroBoleta2 = nroBoleta2;
+    }
+
+    public String getCodigoSeguridad() {
+        return codigoSeguridad;
+    }
+
+    public void setCodigoSeguridad(String codigoSeguridad) {
+        this.codigoSeguridad = codigoSeguridad;
+    }
 
     public void setComision(Double comision) {
         this.comision = comision;
     }
-    
-     public Double getComision() {
-        
+
+    public Double getComision() {
+
         return comision;
     }
-    
 
     public BigDecimal getComisionBanco() {
-        BigDecimal com = new BigDecimal(comision==null?0.00673:comision);//controla el null
+        BigDecimal com = new BigDecimal(comision == null ? 0.00673 : comision);//controla el null
         com = com.setScale(6, RoundingMode.HALF_UP);
         return com;
     }
 
-    
-    
-    
     public void setComisionBanco(BigDecimal comisionBanco) {
         this.comisionBanco = comisionBanco;
     }
-    
-    
 
     public String getNroAleatorio() {
         return String.valueOf(Math.random());
@@ -196,22 +255,15 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.nroAleatorio = nroAleatorio;
     }
 
-    
-    
-    
-    
     public Date getFechaDeposito() {
         return fechaDeposito;
     }
 
     public void setFechaDeposito(Date fechaDeposito) {
-        
-        
+
         this.fechaDeposito = fechaDeposito;
     }
 
-    
-    
     public Date getFechaPago() {
         return fechaPago;
     }
@@ -219,8 +271,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public void setFechaPago(Date fechaPago) {
         this.fechaPago = fechaPago;
     }
-    
-    
 
     public int getNumero() {
         return numero;
@@ -230,11 +280,8 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.numero = numero;
     }
 
-    
-    
-    
     public Boolean getVerLinkReporteMensual() {
-        
+
         return verLinkReporteMensual;
     }
 
@@ -242,7 +289,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.verLinkReporteMensual = verLinkReporteMensual;
     }
 
-    
     public Date getFechaPagoReporte() {
         return fechaPagoReporte;
     }
@@ -250,8 +296,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public void setFechaPagoReporte(Date fechaPagoReporte) {
         this.fechaPagoReporte = fechaPagoReporte;
     }
-    
-    
 
     public Boolean getVerLinkReporte() {
         return verLinkReporte;
@@ -261,8 +305,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.verLinkReporte = verLinkReporte;
     }
 
-    
-    
     public Boolean getVerTabla() {
         return verTabla;
     }
@@ -280,32 +322,27 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.Anio = Anio;
     }
 
-    
     public int getMes() {
         return Mes;
     }
 
     public void setMes(int Mes) {
-        
+
         this.Mes = Mes;
-        
+
         //System.out.println("mess "+Mes);
     }
-    
 
     public List<ParteDiario> getListaMesParteMensual() { //lista del datatable MensualConf
-       
-        return !this.parteDiarioFacade.devuelveParteDiariosPorMes(this.getMes(),this.getAnio()).isEmpty()?
-               this.parteDiarioFacade.devuelveParteDiariosPorMes(this.getMes(),this.getAnio()):null;
-       
-       
+
+        return !this.parteDiarioFacade.devuelveParteDiariosPorMes(this.getMes(), this.getAnio()).isEmpty()
+                ? this.parteDiarioFacade.devuelveParteDiariosPorMes(this.getMes(), this.getAnio()) : null;
+
     }
 
     public void setListaMesParteMensual(List<ParteDiario> listaMesParteDiario) {
         this.listaMesParteDiario = listaMesParteDiario;
     }
-    
-    
 
     public String getArchivo() {
         return archivo;
@@ -315,7 +352,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.archivo = archivo;
     }
 
-    
     public boolean isVerLink() {
         return verLink;
     }
@@ -324,8 +360,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.verLink = verLink;
     }
 
-    
-    
     public Resource getResource() {
         return resource;
     }
@@ -350,10 +384,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.path = path;
     }
 
-    
-    
-    
-    
     public Date getFechaDesdeBusqueda() {
         return fechaDesdeBusqueda;
     }
@@ -369,11 +399,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public void setFechaHastaBusqueda(Date fechaHastaBusqueda) {
         this.fechaHastaBusqueda = fechaHastaBusqueda;
     }
-    
-    
-    
-    
-    
+
     public String getTotalReg() {
         return totalReg;
     }
@@ -382,8 +408,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.totalReg = totalReg;
     }
 
-    
-    
     public String getError() {
         return error;
     }
@@ -391,8 +415,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public void setError(String error) {
         this.error = error;
     }
-    
-    
 
     public boolean isMostrarTextArea() {
         return mostrarTextArea;
@@ -401,8 +423,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public void setMostrarTextArea(boolean mostrarTextArea) {
         this.mostrarTextArea = mostrarTextArea;
     }
-    
-    
 
     public String getContenidoArchivo() {
         return contenidoArchivo;
@@ -412,8 +432,6 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.contenidoArchivo = contenidoArchivo;
     }
 
-    
-    
     public Date getFechaParteDiario() {
         return fechaParteDiario;
     }
@@ -427,11 +445,9 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     }
 
     public void setAdjunto(String adjunto) {
-        
+
         this.adjunto = adjunto;
     }
-    
-    
 
     public void setLstActionItems(List<ActionItem> lstActionItems) {
         this.lstActionItems = lstActionItems;
@@ -460,13 +476,10 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public void setParteDiario(ParteDiario parteDiario) {
         this.parteDiario = parteDiario;
     }
-    
-    
-    public void verReporteMensual(){
+
+    public void verReporteMensual() {
         this.setVerLinkReporteMensual(true);
     }
-    
-   
 
     public List<ActionItem> getLstActionItems() {
         return lstActionItems;
@@ -474,34 +487,27 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
 
     @Override
     public List<ParteDiario> getListElements() {
-        this.setList(this.parteDiarioFacade.findAll(this.getFechaDesdeBusqueda(),this.getFechaHastaBusqueda()));
+        this.setList(this.parteDiarioFacade.findAll(this.getFechaDesdeBusqueda(), this.getFechaHastaBusqueda()));
         this.limpiar();
         return (List<ParteDiario>) this.getList();
     }
 
-    
-
     @Override
     public void actualizar() {
-        
+
         this.setFechaDesdeBusqueda(null);
         this.setFechaHastaBusqueda(null);
-        
+
     }
-    
+
     @Override
     public void limpiar() {
         this.setFechaParteDiario(null);
         this.setAdjunto("");
         this.setPath("");
         this.setFechaPago(null);
-        
-        
-        
-        
-    }
 
-    
+    }
 
     @Override
     public String crearOtro() {
@@ -514,7 +520,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         HttpServletRequest myRequest = (HttpServletRequest) context.getExternalContext().getRequest();
         Long idParteDiarioAux = Long.parseLong(myRequest.getParameter("id"));
         this.setListparteDiario(this.boletaFacade.findAllBoletas(idParteDiarioAux));
-       
+
         this.setParteDiario(this.parteDiarioFacade.find(idParteDiarioAux));
         //System.out.println("desde partediarioMB list boleta--> "+this.getListparteDiario().size());
     }
@@ -533,10 +539,9 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     public String guardarEdicion() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
+
     //modificaciones 27 mayo 2017, parte diario by facu
-    public void customValidator(FileEntryEvent entryEvent) { 
+    public void customValidator(FileEntryEvent entryEvent) {
         FileEntryResults results = ((FileEntry) entryEvent.getComponent()).getResults();
         for (FileEntryResults.FileInfo file : results.getFiles()) {
             this.setAdjunto(file.getFile().getAbsolutePath());
@@ -545,130 +550,168 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
 //                System.out.println(file.getContentType());
 //                System.out.println(file.getFile().getAbsolutePath());
                 this.setAdjunto(file.getFile().getAbsolutePath());
-                
+
             }
         }
-     }
+    }
+
     //lee el archivo segun url
-    public void subeArchivoActualizaEstadoBoletas(String archivo) throws FileNotFoundException, IOException, ParseException {
+    public void subeArchivoActualizaEstadoBoletas(String archivo) throws FileNotFoundException, IOException, ParseException, JRException {
         String cadena;
-        String cadena1="",auxCadena1="";
-        String auxCadena="";
-        String fecha="",nroParteDiario;
-        int totalRegistrosActualizados=0;
-        int i=1;
+        String cadena1 = "", auxCadena1 = "";
+        String auxCadena = "";
+        String fecha = "", nroCorrelativo;
+        int totalRegistrosActualizados = 0;
+        int i = 1;
         FileReader f = new FileReader(archivo);
         BufferedReader b = new BufferedReader(f);
-        
-        while((cadena = b.readLine())!=null) {
-           
-            //System.out.println(cadena);
-            
-            if (!cadena.substring(20, 28).contains("COBRADO")){ //saltea la primera linea del titulo
-                
-               
-                nroParteDiario=cadena.substring(20, 28);
-                 //fecha de pago
-                Long nro=Long.parseLong(nroParteDiario);
-                cadena1=parteDiarioFacade.registrarPagosBoletas(nro); //edita las boletas
-                
-                totalRegistrosActualizados=totalRegistrosActualizados+1;
-                
-                
-                }
-            fecha=cadena.substring(0, 8);
-                
-            }
-            if (!fecha.isEmpty()){
-                    this.setFechaPago(this.textoAfecha(fecha));
-            }
 
-            
-            
-            
-           
-            
-        
+        while ((cadena = b.readLine()) != null) {
+
+            //System.out.println(cadena);
+            if (!cadena.substring(20, 28).contains("COBRADO")) { //saltea la primera linea del titulo
+
+                nroCorrelativo = cadena.substring(20, 28); 
+                //fecha de pago
+                Long nro = Long.parseLong(nroCorrelativo);
+                cadena1 = parteDiarioFacade.registrarPagosBoletas(nro); //edita las boletas
+
+                List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByNroBoleta(nro, nro);
+                if (!solicitudesAux.isEmpty()) {
+                    for (SolicitudCertificado solicitudAux : solicitudesAux) {
+                        if (this.boletaFacade.verificarPago(solicitudAux.getNroBoleta1(), solicitudAux.getNroBoleta2())) {
+                            this.setEntidad(solicitudAux.getEntidad());
+                            this.setNroBoleta1(solicitudAux.getNroBoleta1());
+                            this.setNroBoleta2(solicitudAux.getNroBoleta2());
+                            this.getImprimirCertificado();
+                            MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
+                                    "Hola, aquí está su certificado. \nMuchas gracias por cumplir con nuestros requisitos, le deseamos una linda jornada.", this.getPathCertificadoEnviar());
+
+                            hiloMail.start();
+                        }
+
+                    }
+                }
+
+                totalRegistrosActualizados = totalRegistrosActualizados + 1;
+
+            }
+            fecha = cadena.substring(0, 8);
+
+        }
+        if (!fecha.isEmpty()) {
+            this.setFechaPago(this.textoAfecha(fecha));
+        }
+
         b.close();
-        
-       
-        
+
     }
-     public void mostrarInfo() throws IOException{
-        
+
+    public void mostrarInfo() throws IOException {
+
         this.setMostrarTextArea(true);
     }
-     
+
     @Override
     public String crear() {
-        
-            
 
-            
-        try {         
-             
-           
-                    this.setVerLinkReporte(false);
-                    this.setVerLinkReporteMensual(false);
-                    //System.out.println(this.parteDiarioFacade.existeParteDiario(this.adjunto)?"existe":"noexiste");
-                    System.out.println("que pasooooo:"+this.adjunto.substring(34,42));
-                    //uso la fecha del nombre del archivo como fecha de deposito.
-                    this.setFechaDeposito(this.textoAfechaDeposito(this.adjunto.substring(34, 42)));
-                    //control fecha de deposito.
-                    if (!this.parteDiarioFacade.existeParteDiarioConFechaDeposito(this.getFechaDeposito())){
-                        this.subeArchivoActualizaEstadoBoletas(adjunto);
-                        this.parteDiarioFacade.create(this.getAdjunto(),this.getFechaParteDiario(),this.getFechaPago(),this.getFechaDeposito());
-                        this.subeArchivoActualizaEstadoBoletas(adjunto);
-                        //sube el archivo y actualiza las boletas generadas a pagadas segun el archivo del banco
+        try {
 
-                        this.setResultado("successErrorParteDiario");
-                         //System.out.println("anduvooo");
-                        this.setMsgSuccessError("El parte diario ha sido generado con éxito ");
-                        this.setTitle("Proceso Completo...");
-                        this.setImages("glyphicon glyphicon-ok-circle");
-                        this.limpiar();
-                    }else{
-                        this.setTitle("Resultado del Chequeo...");
-                        this.setImages("glyphicon glyphicon-remove-circle");
-                        this.setMsgSuccessError("Ya existe un parte diario con la fecha de depósito");
-                        this.setResultado("successErrorParteDiario");
-                        this.limpiar();
-                    }
-          
-                   
+            this.setVerLinkReporte(false);
+            this.setVerLinkReporteMensual(false);
+            //System.out.println(this.parteDiarioFacade.existeParteDiario(this.adjunto)?"existe":"noexiste");
+            System.out.println("que pasooooo:" + this.adjunto.substring(34, 42));
+            //uso la fecha del nombre del archivo como fecha de deposito.
+            this.setFechaDeposito(this.textoAfechaDeposito(this.adjunto.substring(34, 42)));
+            //control fecha de deposito.
+            if (!this.parteDiarioFacade.existeParteDiarioConFechaDeposito(this.getFechaDeposito())) {
+                this.subeArchivoActualizaEstadoBoletas(adjunto);
+                this.parteDiarioFacade.create(this.getAdjunto(), this.getFechaParteDiario(), this.getFechaPago(), this.getFechaDeposito());
+                this.subeArchivoActualizaEstadoBoletas(adjunto);
+                //sube el archivo y actualiza las boletas generadas a pagadas segun el archivo del banco
+
+                this.setResultado("successErrorParteDiario");
+                //System.out.println("anduvooo");
+                this.setMsgSuccessError("El parte diario ha sido generado con éxito ");
+                this.setTitle("Proceso Completo...");
+                this.setImages("glyphicon glyphicon-ok-circle");
+                this.limpiar();
+            } else {
+                this.setTitle("Resultado del Chequeo...");
+                this.setImages("glyphicon glyphicon-remove-circle");
+                this.setMsgSuccessError("Ya existe un parte diario con la fecha de depósito");
+                this.setResultado("successErrorParteDiario");
+                this.limpiar();
+            }
+
         } catch (Exception ex) {
             this.setTitle("Resultado del Chequeo...");
             this.setImages("glyphicon glyphicon-remove-circle");
-            System.out.println("errorrrr:"+ex.getMessage());
+            System.out.println("errorrrr:" + ex.getMessage());
             this.setMsgSuccessError(ex.getMessage());
             this.setResultado("successErrorParteDiario");
             this.limpiar();
         }
         return this.getResultado();
-        
+
+    }
+
+    public Resource getImprimirCertificado() throws JRException, FileNotFoundException, IOException {
+        Resource miRecurso = null;
+
+        try {
+            /*Se busca la leyenda del año*/
+            Leyenda leyendaAux = this.leyendaFacade.findByAnio(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+            this.setEstadoCertificado(this.estadoCertificadoFacade.find(2L)); //ESTADO EMITIDO
+            /*seteo el path para guardar el certificado*/
+            this.setPathCertificadoEnviar("/home/DatosDPJ/Certificado " + this.getEntidad().getCodigo() + this.getNroBoleta1() + ".pdf");
+            /*agrega codigo de seguridad al reporte*/
+            List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByNroBoleta(this.getNroBoleta1(), this.getNroBoleta2());
+            SolicitudCertificado soliAux = solicitudesAux.get(0);
+            this.setCodigoSeguridad(this.getNroAleatorioString());
+            soliAux.setCodigoSeguridad(Long.parseLong(this.getCodigoSeguridad()));
+            soliAux.setPathArchivo(this.getPathCertificadoEnviar());
+            soliAux.setEstadoCertificado(this.getEstadoCertificado());
+            this.solicitudCertificadoFacade.edit(soliAux);
+
+            JasperPrint jasperResultado = new BoletaReport().imprimirCertificado(this.getEntidad().getNombre(), this.getEntidad().getCodigo(), this.getNroBoleta1(), this.getNroBoleta2(), leyendaAux.getNombre(), leyendaAux.getAnio(), this.getCodigoSeguridad());
+            byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
+            /*Guarda certificado en DatosDPJ*/
+            OutputStream out = new FileOutputStream(this.getPathCertificadoEnviar());
+            out.write(bites);
+            out.close();
+            miRecurso = new DPJResource(bites);
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return miRecurso;
+    }
+
+    public String getNroAleatorioString() {
+        Random rnd = new Random();
+        int numero = (int) (rnd.nextDouble() * 9999 + 1000);
+        return String.valueOf(numero);
     }
 
     @Override
     public List<SelectItem> getSelectItems() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    //muestra la información del archivo
-   
 
+    //muestra la información del archivo
     //martes 6 de junio de 2017
-    
     public class MyResource extends Resource implements java.io.Serializable {
 
         private String path = "";
         private HashMap<String, String> headers;
         private byte[] bytes;
-        
+
         public MyResource(byte[] bytes) {
             this.bytes = bytes;
             this.headers = new HashMap<String, String>();
         }
-        
+
         public InputStream getInputStream() {
             return new ByteArrayInputStream(this.bytes);
         }
@@ -676,7 +719,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         public String getRequestPath() {
             return path;
         }
-        
+
         public void setRequestPath(String path) {
             this.path = path;
         }
@@ -685,7 +728,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
             return headers;
         }
 
-        public URL  getURL() {
+        public URL getURL() {
             return null;
         }
 
@@ -693,9 +736,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
             return false;
         }
     }
-    
-   
-    
+
     public void initMetaData() { //devuelve el archivo adjunto segun el path que se le pase
         String resourcePath = path;
         this.setPath(resourcePath);
@@ -707,10 +748,10 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
             e.printStackTrace();
             this.resource = new ParteDiarioManagedBean.MyResource(new byte[0]);
         }
-        
+
     }
-    
-      private static byte[] readIntoByteArray(InputStream in) throws IOException {
+
+    private static byte[] readIntoByteArray(InputStream in) throws IOException {
         byte[] buffer = new byte[4096];
         int bytesRead;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -722,163 +763,138 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
 
         return out.toByteArray();
     }
-    
-      
-      
+
     //CAMBIOS 13 JUNIO 2017
-      
-     public void setearFechaParaReporte(Date fechaPago){
+    public void setearFechaParaReporte(Date fechaPago) {
         this.setFechaPagoReporte(fechaPago);
         this.setVerLinkReporte(true);
     }
-     
-     //reporte diario
-     public Resource getImprimirBoleta() throws JRException, FileNotFoundException, IOException {
+
+    //reporte diario
+    public Resource getImprimirBoleta() throws JRException, FileNotFoundException, IOException {
         Resource miRecurso = null;
-        
+
         try {
-               
-                JasperPrint jasperResultado = new BoletaReport().imprimirReporteDiario(this.fechaPagoReporte,this.getComisionBanco());
-                byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
-                miRecurso = new DPJResource(bites);
-            
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return miRecurso;
-    } 
-      //reporte mensual
-     
-     
-     
-      public Resource getImprimirBoletaMensual() throws JRException, FileNotFoundException, IOException {
-        Resource miRecurso = null;
-        
-        try {
-               
-                JasperPrint jasperResultado = new BoletaReport().imprimirReporteMensual(this.Mes,this.Anio,this.getComisionBancoMensual());
-                byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
-                miRecurso = new DPJResource(bites);
-            
+
+            JasperPrint jasperResultado = new BoletaReport().imprimirReporteDiario(this.fechaPagoReporte, this.getComisionBanco());
+            byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
+            miRecurso = new DPJResource(bites);
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
         return miRecurso;
     }
-      
-      
-      public void setearReporteMensual(){
-          this.setVerLinkReporteMensual(true);
-      }
-      
-      
-      public String devolverMes(int nroMes){  
-      Meses.add("ENERO");
-      Meses.add("FEBRERO");
-      Meses.add("MARZO");
-      Meses.add("ABRIL");
-      Meses.add("MAYO");
-      Meses.add("JUNIO");
-      Meses.add("JULIO");
-      Meses.add("AGOSTO");
-      Meses.add("SEPTIEMBRE");
-      Meses.add("OCTUBRE");
-      Meses.add("NOVIEMBRE");
-      Meses.add("DICIEMBRE");
-      return Meses.get(nroMes-1);
-                                        
-      
-      }
-    
-      public String generarBoletaMensual(){
-          
-           try {
-                    if (this.getListaMesParteMensual() != null)  {  
-                        this.setVerLinkReporteMensual(true);
-                        this.setResultado("successErrorParteMensual");
-                        this.setMsgSuccessError("El reporte ha sido generada con éxito");
-                        this.setTitle("Proceso Completo...");
-                        this.setImages("glyphicon glyphicon-ok-circle");
-                       
-                        this.limpiar();
-                    }else{
-                        this.setVerLinkReporteMensual(false);
-                        throw new Exception("Error al generar el reporte, no existe el datos del mes solicitado");
-                        
-                    }
-                }catch (Exception ex) {
-                        this.setTitle("Resultado del Chequeo...");
-                        this.setImages("glyphicon glyphicon-remove-circle");
-                        this.setMsgSuccessError(ex.getMessage());
-                        this.setResultado("successErrorParteMensual");
-                        this.limpiar();
+    //reporte mensual
+
+    public Resource getImprimirBoletaMensual() throws JRException, FileNotFoundException, IOException {
+        Resource miRecurso = null;
+
+        try {
+
+            JasperPrint jasperResultado = new BoletaReport().imprimirReporteMensual(this.Mes, this.Anio, this.getComisionBancoMensual());
+            byte[] bites = JasperExportManager.exportReportToPdf(jasperResultado);
+            miRecurso = new DPJResource(bites);
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        return this.getResultado();
-          
-      }
-      
-      public String generarReporteDiario(){
-          
-           try {
-                        this.setVerLinkReporte(true);
-                        this.setResultado("successErrorParteDiario");
-                        this.setMsgSuccessError("El reporte ha sido generada con éxito");
-                        this.setTitle("Proceso Completo...");
-                        this.setImages("glyphicon glyphicon-ok-circle");
-                        //this.setVerLinkReporte(true);
-                        this.limpiar();
-                   
-                        
-                        
-                    
-                }catch (Exception ex) {
-                        this.setTitle("Resultado del Chequeo...");
-                        this.setImages("glyphicon glyphicon-remove-circle");
-                        this.setMsgSuccessError(ex.getMessage());
-                        this.setResultado("successErrorParteDiario");
-                        this.limpiar();
-        }
-        return this.getResultado();
-          
-      }
-    
-      
-     private Date textoAfecha(String fecha) throws ParseException{
-       
-        String texto=fecha.substring(0,2)+"/"+fecha.substring(2,4)+"/"+fecha.substring(4,8);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        
+        return miRecurso;
+    }
 
-       
-           // System.out.println("holaaaaaa "+dateInString);
-           Date date = formatter.parse(texto);
-            //this.setFechaPago(date);
-            return date;
+    public void setearReporteMensual() {
+        this.setVerLinkReporteMensual(true);
+    }
 
-        
-    
-         
-     }
-     
-     //obtiene la fecha de deposito desde el nombre del archivo ej:FdoEspPerJur1164_20170726, devuelve-> 26-07-2017
-     private Date textoAfechaDeposito(String fecha) throws ParseException{
-       
-        String texto=fecha.substring(6,8)+"/"+fecha.substring(4,6)+"/"+fecha.substring(0,4);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        
-
-       
-           // System.out.println("holaaaaaa "+dateInString);
-           Date date = formatter.parse(texto);
-            //this.setFechaPago(date);
-            return date;
-
-        
-    
-         
-     }
-    
-    
+    public String devolverMes(int nroMes) {
+        Meses.add("ENERO");
+        Meses.add("FEBRERO");
+        Meses.add("MARZO");
+        Meses.add("ABRIL");
+        Meses.add("MAYO");
+        Meses.add("JUNIO");
+        Meses.add("JULIO");
+        Meses.add("AGOSTO");
+        Meses.add("SEPTIEMBRE");
+        Meses.add("OCTUBRE");
+        Meses.add("NOVIEMBRE");
+        Meses.add("DICIEMBRE");
+        return Meses.get(nroMes - 1);
 
     }
 
+    public String generarBoletaMensual() {
+
+        try {
+            if (this.getListaMesParteMensual() != null) {
+                this.setVerLinkReporteMensual(true);
+                this.setResultado("successErrorParteMensual");
+                this.setMsgSuccessError("El reporte ha sido generada con éxito");
+                this.setTitle("Proceso Completo...");
+                this.setImages("glyphicon glyphicon-ok-circle");
+
+                this.limpiar();
+            } else {
+                this.setVerLinkReporteMensual(false);
+                throw new Exception("Error al generar el reporte, no existe el datos del mes solicitado");
+
+            }
+        } catch (Exception ex) {
+            this.setTitle("Resultado del Chequeo...");
+            this.setImages("glyphicon glyphicon-remove-circle");
+            this.setMsgSuccessError(ex.getMessage());
+            this.setResultado("successErrorParteMensual");
+            this.limpiar();
+        }
+        return this.getResultado();
+
+    }
+
+    public String generarReporteDiario() {
+
+        try {
+            this.setVerLinkReporte(true);
+            this.setResultado("successErrorParteDiario");
+            this.setMsgSuccessError("El reporte ha sido generada con éxito");
+            this.setTitle("Proceso Completo...");
+            this.setImages("glyphicon glyphicon-ok-circle");
+            //this.setVerLinkReporte(true);
+            this.limpiar();
+
+        } catch (Exception ex) {
+            this.setTitle("Resultado del Chequeo...");
+            this.setImages("glyphicon glyphicon-remove-circle");
+            this.setMsgSuccessError(ex.getMessage());
+            this.setResultado("successErrorParteDiario");
+            this.limpiar();
+        }
+        return this.getResultado();
+
+    }
+
+    private Date textoAfecha(String fecha) throws ParseException {
+
+        String texto = fecha.substring(0, 2) + "/" + fecha.substring(2, 4) + "/" + fecha.substring(4, 8);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        // System.out.println("holaaaaaa "+dateInString);
+        Date date = formatter.parse(texto);
+        //this.setFechaPago(date);
+        return date;
+
+    }
+
+    //obtiene la fecha de deposito desde el nombre del archivo ej:FdoEspPerJur1164_20170726, devuelve-> 26-07-2017
+    private Date textoAfechaDeposito(String fecha) throws ParseException {
+
+        String texto = fecha.substring(6, 8) + "/" + fecha.substring(4, 6) + "/" + fecha.substring(0, 4);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        // System.out.println("holaaaaaa "+dateInString);
+        Date date = formatter.parse(texto);
+        //this.setFechaPago(date);
+        return date;
+
+    }
+
+}

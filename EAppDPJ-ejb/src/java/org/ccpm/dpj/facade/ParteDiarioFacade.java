@@ -18,6 +18,7 @@ import javax.persistence.TemporalType;
 import org.ccpm.dpj.entity.Boleta;
 import org.ccpm.dpj.entity.EstadoBoleta;
 import org.ccpm.dpj.entity.ParteDiario;
+import org.ccpm.dpj.entity.SolicitudCertificado;
 
 /**
  *
@@ -33,7 +34,8 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
     private EstadoBoletaFacadeLocal estadoBoletaFacade;
     @EJB
     private BoletaFacadeLocal boletaFacade;
-    
+    @EJB
+    private SolicitudCertificadoFacadeLocal solicitudFacade;
     
     @Override
     protected EntityManager getEntityManager() {
@@ -147,6 +149,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
             
             return "No se encontró la boleta: "+nroBoleta+"\n";
         }
+       
                
            return error;
                

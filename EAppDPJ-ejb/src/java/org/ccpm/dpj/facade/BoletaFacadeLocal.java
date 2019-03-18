@@ -30,6 +30,8 @@ public interface BoletaFacadeLocal {
     public List<Boleta> findAll();
 
     public List<Boleta> findRange(int[] range);
+    
+    public boolean verificarPago(Long nroCorrelativo1, Long nroCorrelativo2);
 
     public int count();
 

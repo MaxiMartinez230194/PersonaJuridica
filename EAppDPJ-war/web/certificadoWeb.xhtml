@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ace="http://www.icefaces.org/icefaces/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">      
+    <ui:composition template="./layoutPublico.xhtml">
+        <ui:define name="content">
+            <h:form id="formAsociacion" title=" ">
+
+                <table style="width: 60%; margin: 0px auto; border: #000; margin-bottom: 50px">
+                    <tr>
+                        <td style="font-size: medium;">
+                            Certificados para Entidades Vigentes
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: justify;">
+                            <br />
+                            El servicio de certificados vía web tiene como objetivo ofrecer a las Entidades registradas
+                            la posibilidad de obtener un certificado en el cual se consta que la misma se encuentra 
+                            vigente e inscripta en la Dirección de Personas Juridicas de La Provincia de Misiones. 
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: justify;">
+                            <br />
+                            Importante: Recordar que para que el certificado sea enviado al instante es necesario 
+                            tener las boletas de: CERTIFICACIONES y TODO TRÁMITE pagadas. En algunos casos puede 
+                            que el impacto del pago demore hasta 24HS, una vez hecho esto será enviado al correo electrónico
+                            de la Entidad.
+                        </td>
+                    </tr>
+                </table>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 " align="center">
+                        <ace:pushButton id="nuevaSoli" class="botonGrande " action="nuevaSolicitudCertificado">
+                            <i class="fa fa-certificate fa-2x" aria-hidden="true"></i>
+                            <p class="lead" align="center"><small>SOLICITAR CERTIFICADO</small></p>
+                        </ace:pushButton>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 " align="center">
+                        <ace:pushButton id="buscarTema" class="botonGrande " action="categoriaResultado">
+                            <i class="fa fa-check-square-o fa-2x" aria-hidden="true"></i>
+                            <p class="lead" align="center"><small>VALIDAR CERTIFICADO</small></p>
+                        </ace:pushButton>
+                    </div>
+                </div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
+
+
+

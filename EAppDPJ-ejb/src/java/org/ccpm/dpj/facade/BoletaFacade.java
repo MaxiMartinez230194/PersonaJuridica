@@ -135,6 +135,22 @@ public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacade
         }
         return nro2;
     }
+    
+    @Override
+    public boolean verificarPago(Long nroCorrelativo1, Long nroCorrelativo2) {
+    try {
+            Query consulta = em.createQuery("select object(o) from Boleta as o WHERE o.estado = true and o.nroCorrelativo = :p1 ");
+            Query consulta1 = em.createQuery("select object(o) from Boleta as o WHERE o.estado = true and o.nroCorrelativo = :p2 ");
+            consulta.setParameter("p1", nroCorrelativo1);
+            consulta.setParameter("p2", nroCorrelativo2);
+            Boleta boletaAux = (Boleta) consulta.getSingleResult();
+            Boleta boleta1Aux = (Boleta) consulta1.getSingleResult();
+            
+            return boletaAux.getEstadoBoleta().getId() == 3 && boleta1Aux.getEstadoBoleta().getId() == 3;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 
     private Long generarNroCorrelativo() {
         Long nro = 1L;
@@ -170,5 +186,6 @@ public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacade
 
         return (List<ParteDiario>) em.createQuery("select object(o) FROM Boleta as o WHERE o.estado = true AND o.parteDiario.id= " + idParteDiario).getResultList();
     }
+
 
 }
