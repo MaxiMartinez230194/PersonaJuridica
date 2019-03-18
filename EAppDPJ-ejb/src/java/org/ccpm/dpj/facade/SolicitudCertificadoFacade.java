@@ -48,7 +48,7 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
         consulta.setParameter("p1", estado);
         return consulta.getResultList();
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
     public List<SolicitudCertificado> findByNroBoleta(Long nroBoleta1, Long nroBoleta2) {
@@ -103,6 +103,13 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
         } catch (Exception e) {
             throw new Exception("Error al intentar crear la solicitud");
         }
+    }
+
+    @Override
+    public List<SolicitudCertificado> verificar(String idEntidad, Long codigoSeguridad) throws Exception {
+        Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.estado = true AND o.entidad.id IN (" + idEntidad + ") AND o.codigoSeguridad = :p1 ");
+        consulta.setParameter("p1", codigoSeguridad);
+        return consulta.getResultList();
     }
 
     @Override

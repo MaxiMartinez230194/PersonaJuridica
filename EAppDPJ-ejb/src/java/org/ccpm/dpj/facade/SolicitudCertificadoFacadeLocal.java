@@ -35,6 +35,8 @@ public interface SolicitudCertificadoFacadeLocal {
     public void create(Long idEntidad, Long idEstadoCertificado, Long nroBoleta1, Long nroBoleta2) throws Exception;
 
     public void solicitar(Long idEntidad, Long nroBoleta1, Long nroBoleta2) throws Exception;
+    
+    public List<SolicitudCertificado> verificar(String idEntidad, Long codigoSeguridad) throws Exception;
 
     public void remove(Long idSolicitud) throws Exception;
 

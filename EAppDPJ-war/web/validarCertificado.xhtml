@@ -8,7 +8,7 @@
     <ui:composition template="./layoutPublico.xhtml">
         <ui:define name="content">
             <h:form id="formNuevaSolicitud" title=" ">
-                <ace:panel id="nuevaSolicitud" header="Nueva Solicitud de Certificado" style="width:60%;margin-top: 5%; margin-left: 20%">
+                <ace:panel id="validarSolicitud" header="Validar Certificado" style="width:60%;margin-top: 5%; margin-left: 20%">
                     <table border="0" cellspacing="10" class="panel-buttons">
                         <tr >
                             <td align="right">
@@ -25,36 +25,23 @@
                         </tr>  
                         <tr>
                             <td align="right">
-                                <h:outputLabel value="(*) Nro. de Boleta TASA CERTIFICACIONES (C/U): "/>
+                                <h:outputLabel value="(*) Código de Seguridad: "/>
                             </td>
                             <td align="left">
-                                <ace:textEntry id="nroBoleta1" label="Boleta" value="#{solicitudCertificadoManagedBean.nroBoleta1}" required="true">
-                                    <ace:ajax render="@this nroBoleta1 nroBoleta1Msg" event="blur"/>                                
-                                </ace:textEntry>   
+                                <ace:textEntry id="codigoSeguridad" label="Boleta" value="#{solicitudCertificadoManagedBean.codigoSeguridad}" required="true">
+                                    <ace:ajax render="@this codigoSeguridad codigoSeguridadMsg" event="blur"/>                                
+                                </ace:textEntry>
                             </td>
                             <td align="left">
-                                <ace:message id="nroBoleta1Msg" for="nroBoleta1" initEffect="slide" changeEffect="shake"/> 
+                                <ace:message id="codigoSeguridadMsg" for="codigoSeguridad" initEffect="slide" changeEffect="shake"/> 
                             </td>
                         </tr> 
-                        <tr>
-                            <td align="right">
-                                <h:outputLabel value="(*) Nro. de Boleta TASA POR TODO TRÁMITE: "/>
-                            </td>
-                            <td align="left">
-                                <ace:textEntry id="nroBoleta2" label="Boleta" value="#{solicitudCertificadoManagedBean.nroBoleta2}" required="true">
-                                    <ace:ajax render="@this nroBoleta2 nroBoleta2Msg" event="blur"/>                                
-                                </ace:textEntry>   
-                            </td>
-                            <td align="left">
-                                <ace:message id="nroBoleta2Msg" for="nroBoleta2" initEffect="slide" changeEffect="shake"/> 
-                            </td>
-                        </tr>
                         <tr>
                             <td align="right">
                             </td>
                             <td align="left">
                                 <h:panelGrid id="buttonGrid" columns="3" class="panel-buttons">
-                                    <ace:pushButton id="save" value="#{msg.save}" action="#{solicitudCertificadoManagedBean.solicitar()}"/>
+                                    <ace:pushButton id="save" value="Verificar" action="#{solicitudCertificadoManagedBean.verificarCertificado()}"/>
                                     <ace:pushButton id="cancel" value="#{msg.cancel}" action="certificadoWeb" immediate="true" actionListener="#{solicitudCertificadoManagedBean.limpiar()}"/>
                                 </h:panelGrid>
                             </td>
