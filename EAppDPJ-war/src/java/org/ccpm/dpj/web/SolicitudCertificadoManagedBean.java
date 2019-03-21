@@ -285,16 +285,21 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             throw new Exception("No existe una Entidad con el código ingresado.");
         } else {
             for (Entidad entidadAux : entidadesAux) {
-                if (entidadAux.getCorreo() != null) {
-                    if (isValidEmailAddress(entidadAux.getCorreo())) {
-                        this.setIdEntidad(entidadAux.getId());
-                        this.setEntidad(entidadAux);
-                    } else {
-                        throw new Exception("La entidad posee un correo electrónico incorrecto, comuníquese con los administradores del sistema.");
-                    }
+                if (entidadAux.getEstadoEntidad().getId() == 2) { //VERIFICA QUE EL ESTADO DE LA ENTIDAD SEA ACTIVO
 
+                    if (entidadAux.getCorreo() != null) { //VERIFICA QUE LA ENTIDAD TENGA UN EMAIL
+                        if (isValidEmailAddress(entidadAux.getCorreo())) { //VERIFICA QUE EL EMAIL SEA CORRECTO
+                            this.setIdEntidad(entidadAux.getId());
+                            this.setEntidad(entidadAux);
+                        } else {
+                            throw new Exception("La entidad posee un correo electrónico incorrecto, comuníquese con los administradores del sistema.");
+                        }
+
+                    } else {
+                        throw new Exception("La entidad no tiene registrado un correo electrónico, comuníquese con los administradores del sistema.");
+                    }
                 } else {
-                    throw new Exception("La entidad no tiene registrado un correo electrónico, comuníquese con los administradores del sistema.");
+                        throw new Exception("La entidad no se encuentra ACTIVA.");
                 }
                 System.out.println(entidadAux.getNombre());
             }

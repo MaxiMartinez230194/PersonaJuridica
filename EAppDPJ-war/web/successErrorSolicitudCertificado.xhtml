@@ -7,21 +7,34 @@
     <ui:composition template="./layoutPublico.xhtml">
         <ui:define name="content">
             <h:form id="formSuccessErrorSolicitudCertificado" title=" ">
-                <ace:panel header="#{solicitudCertificadoManagedBean.title}" style="width:60%;margin-top: 5%; margin-left: 20%">
-                    <table border="0" cellpadding="5" cellspacing="5" class="panel-message">
-                        <tr>
-                            <td align="right">
-                                <span class="#{solicitudCertificadoManagedBean.images} fa-2x"></span>
-                            </td>
-                            <td align="left">
-                                <h:outputLabel value="#{solicitudCertificadoManagedBean.msgSuccessError}"/>
-                            </td>                            
-                        </tr> 
-                     </table>                    
-                    <div align="center" class="panel-buttons">
-                        <ace:linkButton action="certificadoWeb" value="- Volver -" actionListener="#{solicitudCertificadoManagedBean.limpiar()}"/>
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title" style="font-weight: bold">#{solicitudCertificadoManagedBean.title}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-offset-1">
+                                    <table border="0" cellpadding="5" cellspacing="5" class="panel-message">
+                                        <tr>
+                                            <td align="right">
+                                                <span class="#{solicitudCertificadoManagedBean.images} fa-2x"></span>
+                                            </td>
+                                            <td align="left">
+                                                <h:outputLabel value="#{solicitudCertificadoManagedBean.msgSuccessError}" style="font-weight: 200; margin-left: 15px;"/>
+                                            </td>                            
+                                        </tr> 
+                                    </table> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 col-md-offset-5 form-group item-form">    
+                                    <ace:pushButton action="certificadoWeb" class="botonChico" value="Volver" actionListener="#{solicitudCertificadoManagedBean.limpiar()}"/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </ace:panel>                
+                </div>            
             </h:form>
         </ui:define>
     </ui:composition>

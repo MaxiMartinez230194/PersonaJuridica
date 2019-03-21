@@ -9,6 +9,7 @@ and open the template in the editor.
 */
 
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans');
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 
 body {
     font-family: "Noto Sans";
@@ -72,6 +73,15 @@ body {
     padding-top: 20px;
 }
 
+.contentPublico{
+    font-family: 'Montserrat', sans-serif;
+    height: auto;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-bottom: 25px;
+    padding-top: 20px;
+}
+
 .img-circle {
   border-radius: 50%;
 }
@@ -84,7 +94,7 @@ body {
 .panel-message{
     margin-top: 15px;
     margin-bottom: 15px;
-    font-size: 1.5em;
+    font-size: 1.2em !important;
 }
 
 .panel-column-data-left{

@@ -60,7 +60,6 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-
     public List<SolicitudCertificado> findAll(String nombre) {
         return em.createQuery("select object(o) FROM SolicitudCertificado as o WHERE o.estado = true AND o.nombre LIKE '" + nombre + "%' ORDER BY o.nombre ").getResultList();
     }
