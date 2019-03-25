@@ -20,14 +20,6 @@ and open the template in the editor.
                         <h:panelGroup >
                             <ace:linkButton action="solicitudCertificadoConf" actionListener="#{solicitudCertificadoManagedBean.actualizar}" value="Certificados"/>
                         </h:panelGroup>
-                        <span class="glyphicon-chico glyphicon-plus"></span>
-                        <h:panelGroup rendered="#{solicitudCertificadoManagedBean.alta}">
-                            <ace:linkButton action="nuevaSolicitudCertificado" value="Nueva Solicitud de Certificado"/>
-                        </h:panelGroup>
-                        <span class="glyphicon-chico glyphicon-plus"></span>
-                        <h:panelGroup >
-                            <ace:linkButton actionListener="#{solicitudCertificadoManagedBean.getNroAleatorio()}" value="imprimir Certificado"/>
-                        </h:panelGroup>
                     </h:panelGrid>
 
                     <ace:panel id="solicitudCertificadoPanelBusqueda" header="#{msg.busqueda}" toggleable="true" closeSpeed="2000" class="panel-buttons" collapsed="true">
@@ -35,7 +27,7 @@ and open the template in the editor.
                         <table cellspacing="10" class="panel-buttons">
                             <tr>
                                 <td align="right">                                
-                                    <h:outputLabel value="#{msg.denominacion}"/>
+                                    <h:outputLabel value="Código de Entidad:"/>
                                 </td>
                                 <td align="left">
                                     <ace:textEntry value="#{solicitudCertificadoManagedBean.nombreBuscar}"/>
@@ -82,40 +74,11 @@ and open the template in the editor.
 
 
                         <ace:column id="accion" headerText="#{msg.actionT}" style="width: 15%">
-                            <h:panelGrid  columns="3"> 
-
-                                <ace:pushButton id="detalle"  action="detalleSolicitudCertificado" actionListener="#{solicitudCertificadoManagedBean.verDetalle}" rendered="#{solicitudCertificadoManagedBean.detalle}">
-                                    <span class="glyphicon glyphicon-zoom-in"></span>                             
-                                    <f:param name="id" value="#{item.id}"/>
-                                </ace:pushButton>
-
-                                <ace:pushButton id="editar"  action="editarSolicitudCertificado" actionListener="#{solicitudCertificadoManagedBean.prepararParaEditar()}" rendered="#{solicitudCertificadoManagedBean.modificacion}">
-                                    <span class="glyphicon glyphicon-pencil"></span> 
-                                    <f:param name="id" value="#{item.id}"/>
-                                </ace:pushButton>
-
-                                <ace:pushButton id="eliminar" rendered="#{solicitudCertificadoManagedBean.baja}" p:onclick="ice.ace.instance('#{confirmDialogEntidad.clientId}').show();return false;">
-                                    <span class="glyphicon glyphicon-trash"></span> 
-                                </ace:pushButton>
-
-                                <ace:confirmationDialog id="confirmDialogAccion" binding="#{confirmDialogAccion}"
-                                                        message="${msg.msgDelete}"
-                                                        header="${msg.confirm}"
-                                                        modal="true"
-                                                        width="300"
-                                                        height="155"
-                                                        position="center">
-                                    <h:panelGrid columns="2" class="panel-confirm-buttons">
-                                        <ace:pushButton id="yes" value="${msg.acep}" p:onclick="ice.ace.instance('#{confirmDialogAccion.clientId}').hide();" actionListener="#{accionManagedBean.guardarBorrado()}">
-                                            <f:param name="id" value="#{item.id}" />
-                                            <f:ajax execute="@this" render="@all"/>
-                                        </ace:pushButton>
-                                        <ace:pushButton id="no" value="${msg.cancel}" p:onclick="ice.ace.instance('#{confirmDialogAccion.clientId}').hide();">
-                                            <f:ajax execute="@this" render="@all"/>
-                                        </ace:pushButton>
-                                    </h:panelGrid>
-                                </ace:confirmationDialog>
-
+                            <h:panelGrid  columns="1">
+                                <center>
+                                    <a style="display: #{item.pathArchivo == null?'none':''}" href="#{request.contextPath}/certificados/#{item.pathArchivo}" target="_blank"><span style="background-color: #00aaee;padding: 11px;color: white;" class="glyphicon glyphicon-print"></span></a>
+                                    <a style="display: #{item.pathArchivo != null?'none':''}" ><span style="background-color: #00aaee;padding: 11px;color: white;" class="glyphicon glyphicon-print"></span></a>
+                                </center>
                             </h:panelGrid>
                         </ace:column>          
                     </ace:dataTable>

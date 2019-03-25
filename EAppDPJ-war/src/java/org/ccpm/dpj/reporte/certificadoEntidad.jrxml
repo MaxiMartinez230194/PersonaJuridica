@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2019-03-14T11:28:44 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="actaCargo" pageWidth="612" pageHeight="1008" columnWidth="499" leftMargin="85" rightMargin="28" topMargin="56" bottomMargin="28" isSummaryNewPage="true" uuid="70ecc80e-8c3b-4e68-8e83-7c89a0b1fc4d">
+<!-- 2019-03-23T20:37:46 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="actaCargo" pageWidth="595" pageHeight="842" columnWidth="482" leftMargin="85" rightMargin="28" topMargin="56" bottomMargin="28" isSummaryNewPage="true" uuid="70ecc80e-8c3b-4e68-8e83-7c89a0b1fc4d">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DPJ ADAPTER"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
@@ -11,8 +13,6 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DPJ ADAPTER"/>
 	<parameter name="pathimagen" class="java.lang.String"/>
 	<parameter name="nombreEntidad" class="java.lang.String"/>
 	<parameter name="nroBoleta1" class="java.lang.Long"/>
@@ -25,6 +25,7 @@
 	<parameter name="nroEntidad" class="java.lang.String"/>
 	<parameter name="codigoSeguridad" class="java.lang.String"/>
 	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="pathsello" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select fecha
 from solicitudes
@@ -92,7 +93,7 @@ where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBo
 				<text><![CDATA[DIRECCIÓN DE PERSONAS JURÍDICAS]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="109" y="0" width="390" height="43" uuid="363cbee5-0ad3-429f-9213-f39e329f376c">
+				<reportElement x="109" y="0" width="369" height="43" uuid="363cbee5-0ad3-429f-9213-f39e329f376c">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -101,7 +102,7 @@ where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBo
 				<textFieldExpression><![CDATA[$P{anio}+" - "+$P{leyendaProvincia}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="152" width="499" height="21" uuid="4661aad1-f19f-4dd9-92f3-847e3bd35653">
+				<reportElement x="0" y="152" width="478" height="21" uuid="4661aad1-f19f-4dd9-92f3-847e3bd35653">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 				</reportElement>
@@ -112,7 +113,7 @@ where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBo
 				<text><![CDATA[DIRECCIÓN DE PERSONAS JURÍDICAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="173" width="499" height="20" uuid="704f58cc-b7a3-445a-a3cf-c68d02d1708a">
+				<reportElement x="0" y="173" width="478" height="20" uuid="704f58cc-b7a3-445a-a3cf-c68d02d1708a">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<box leftPadding="1"/>
@@ -124,26 +125,38 @@ where estado = true and nro_boleta1 = $P{nroBoleta1}  and nro_boleta2 = $P{nroBo
 		</band>
 	</title>
 	<pageHeader>
-		<band height="275">
+		<band height="521">
 			<textField>
-				<reportElement x="0" y="9" width="499" height="170" uuid="cb3b18df-de17-4d54-980b-3fc214c3a54f">
+				<reportElement x="0" y="9" width="478" height="170" uuid="cb3b18df-de17-4d54-980b-3fc214c3a54f">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
 				<textElement textAlignment="Justified">
 					<font size="14" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CERTIFICO que la entidad denominada: "+$P{nombreEntidad}+" cuenta con Personería Jurídica, se halla INSCRIPTA Y VIGENTE en el registro de entidades civiles sin fines de lucro de esta Dirección a mi cargo bajo el N° "+$P{nroEntidad}+". SE EXPIDE: El presente en la ciudad de Posadas, Capital de la Provincia de Misiones, a los "+DATEFORMAT($F{fecha},"dd")+" días del mes "+DATEFORMAT($F{fecha},"MMMM")+" del año "+DATEFORMAT($F{fecha},"YYYY")+".-"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CERTIFICO que la entidad denominada: ''"+$P{nombreEntidad}+"'' cuenta con Personería Jurídica, se halla INSCRIPTA Y VIGENTE en el registro de entidades civiles sin fines de lucro de esta Dirección a mi cargo bajo el N° "+$P{nroEntidad}+". SE EXPIDE: El presente en la ciudad de Posadas, Capital de la Provincia de Misiones, a los "+DATEFORMAT($F{fecha},"dd")+" días del mes "+DATEFORMAT($F{fecha},"MMMM")+" del año "+DATEFORMAT($F{fecha},"YYYY")+".-"]]></textFieldExpression>
 			</textField>
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="-22" y="160" width="530" height="240" uuid="fb3670f2-bc34-4659-86df-5a4c46fb5e2c">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{pathsello}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="-1" y="466" width="461" height="30" uuid="d52c5f86-84ad-4451-9c98-d540aedd24a3"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Código de seguridad: "+$P{codigoSeguridad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-1" y="420" width="481" height="44" uuid="9eac3a24-d747-47a2-b90d-84ed26c22d97"/>
+				<textElement>
+					<font size="10" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[El código de seguridad que aparece en la parte inferior tiene como finalidad verificar la validez del certificado. Para realizar esta verificación diríjase a www.personasjuridicas.misiones.gov.ar en la sección Certificados - Validar Certificado.]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
-	<pageFooter>
-		<band height="49">
-			<textField>
-				<reportElement x="-1" y="19" width="499" height="30" uuid="21cc0a66-6077-4036-b377-c62837e0dd70"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Código de seguridad: XXXX - "+$P{codigoSeguridad}+" - XXXX"]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
 </jasperReport>

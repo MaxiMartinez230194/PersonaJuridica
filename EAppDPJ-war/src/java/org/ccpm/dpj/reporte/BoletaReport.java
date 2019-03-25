@@ -103,6 +103,7 @@ public class BoletaReport {
             parametros.put("nroBoleta1", nroBoleta1);
             parametros.put("nroBoleta2", nroBoleta2);
             parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
+            parametros.put("pathsello", getClass().getResource("sello.jpg").getPath());
             parametros.put("leyendaProvincia", "'" + leyenda + "'");
             parametros.put("anio", anio);
             parametros.put("nroEntidad", nroEntidad);

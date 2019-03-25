@@ -22,7 +22,7 @@ public class SolicitudCertificado implements Serializable {
     @Column(name="nro_boleta2")
     private Long nroBoleta2; //BOLETA DE TASA POR TODO TRAMITE
     @Column(name="codigo_seguridad")
-    private Long codigoSeguridad; //PARA VERIFICAR VALIDEZ DEL CERTIFICADO
+    private String codigoSeguridad; //PARA VERIFICAR VALIDEZ DEL CERTIFICADO
     @Column(name="path_archivo")
     private String pathArchivo;
     @ManyToOne
@@ -59,11 +59,11 @@ public class SolicitudCertificado implements Serializable {
         this.entidad = entidad;
     }
 
-    public Long getCodigoSeguridad() {
+    public String getCodigoSeguridad() {
         return codigoSeguridad;
     }
 
-    public void setCodigoSeguridad(Long codigoSeguridad) {
+    public void setCodigoSeguridad(String codigoSeguridad) {
         this.codigoSeguridad = codigoSeguridad;
     }
 

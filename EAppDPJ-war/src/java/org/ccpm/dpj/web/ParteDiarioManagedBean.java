@@ -17,8 +17,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -664,12 +666,12 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
             Leyenda leyendaAux = this.leyendaFacade.findByAnio(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             this.setEstadoCertificado(this.estadoCertificadoFacade.find(2L)); //ESTADO EMITIDO
             /*seteo el path para guardar el certificado*/
-            this.setPathCertificadoEnviar("/home/DatosDPJ/Certificado " + this.getEntidad().getCodigo() + this.getNroBoleta1() + ".pdf");
+            this.setPathCertificadoEnviar("/home/DatosDPJ/Certificado-" + this.getEntidad().getCodigo() + this.getNroBoleta1() + ".pdf");
             /*agrega codigo de seguridad al reporte*/
             List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByNroBoleta(this.getNroBoleta1(), this.getNroBoleta2());
             SolicitudCertificado soliAux = solicitudesAux.get(0);
-            this.setCodigoSeguridad(this.getNroAleatorioString());
-            soliAux.setCodigoSeguridad(Long.parseLong(this.getCodigoSeguridad()));
+            this.setCodigoSeguridad(this.generateRandomText());
+            soliAux.setCodigoSeguridad(this.getCodigoSeguridad());
             soliAux.setPathArchivo(this.getPathCertificadoEnviar());
             soliAux.setEstadoCertificado(this.getEstadoCertificado());
             this.solicitudCertificadoFacade.edit(soliAux);
@@ -692,6 +694,12 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         Random rnd = new Random();
         int numero = (int) (rnd.nextDouble() * 9999 + 1000);
         return String.valueOf(numero);
+    }
+    
+    public String generateRandomText() {
+        SecureRandom random = new SecureRandom();
+        String text = new BigInteger(40, random).toString(32);
+        return text.toUpperCase();
     }
 
     @Override

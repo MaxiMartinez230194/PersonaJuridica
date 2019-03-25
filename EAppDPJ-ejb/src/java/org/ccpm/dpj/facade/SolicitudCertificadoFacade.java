@@ -61,7 +61,7 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
     public List<SolicitudCertificado> findAll(String nombre) {
-        return em.createQuery("select object(o) FROM SolicitudCertificado as o WHERE o.estado = true AND o.nombre LIKE '" + nombre + "%' ORDER BY o.nombre ").getResultList();
+        return em.createQuery("select object(o) FROM SolicitudCertificado as o WHERE o.estado = true AND o.entidad.codigo LIKE '%" + nombre + "%' ").getResultList();
     }
 
     @Override
@@ -105,9 +105,8 @@ public class SolicitudCertificadoFacade extends AbstractFacade<SolicitudCertific
     }
 
     @Override
-    public List<SolicitudCertificado> verificar(String idEntidad, Long codigoSeguridad) throws Exception {
-        Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.estado = true AND o.entidad.id IN (" + idEntidad + ") AND o.codigoSeguridad = :p1 ");
-        consulta.setParameter("p1", codigoSeguridad);
+    public List<SolicitudCertificado> verificar(String idEntidad, String codigoSeguridad) throws Exception {
+        Query consulta = em.createQuery("select object(o) from SolicitudCertificado as o WHERE o.estado = true AND o.entidad.id IN (" + idEntidad + ") AND o.codigoSeguridad LIKE '" + codigoSeguridad + "' ");
         return consulta.getResultList();
     }
 

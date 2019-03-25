@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -262,6 +264,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         this.setCodigoEntidad(null);
         this.setNroBoleta1(null);
         this.setNroBoleta2(null);
+        this.setCodigoSeguridad(null);
         this.matarBeans();
     }
 
@@ -299,9 +302,8 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
                         throw new Exception("La entidad no tiene registrado un correo electrónico, comuníquese con los administradores del sistema.");
                     }
                 } else {
-                        throw new Exception("La entidad no se encuentra ACTIVA.");
+                    throw new Exception("La entidad no se encuentra ACTIVA.");
                 }
-                System.out.println(entidadAux.getNombre());
             }
         }
     }
@@ -377,7 +379,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             if (this.verificarPagoBoletas(this.getBoleta1().getId(), this.getBoleta2().getId())) {
                 this.getImprimirCertificado();
                 MailThread hiloMail = new MailThread(true, this.getEntidad().getCorreo(), "CERTIFICADO DE: ".concat(this.getEntidad().getNombre()),
-                        "Hola, aquí está su certificado. \nMuchas gracias por cumplir con nuestros requisitos, le deseamos una linda jornada.", this.getPathCertificadoEnviar());
+                        "Hola aquí le enviamos la Certificación solicitada. \nGracias por adherirse al sistema de servicios online de la Dirección de Personas Jurídicas. \nRecuerde que puede validar la siguiente certificación en nuestra página oficial: www.personasjuridicas.misiones.gov.ar sección certificados insertando el código que obra al pie de la referida certificación.\n\nAtte.\nDirección de Personas Jurídicas\nMinisterio de Gobierno\nProvincia de Misiones", this.getPathCertificadoEnviar());
 
                 hiloMail.start();
 
@@ -404,14 +406,14 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             for (Entidad entidadAux : entidadesAux) {
                 ids.append(String.valueOf(entidadAux.getId())).append(",");
             }
-            List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.verificar(ids.toString().subSequence(0, ids.length() - 1).toString(), Long.parseLong(this.getCodigoSeguridad()));
+            List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.verificar(ids.toString().subSequence(0, ids.length() - 1).toString(), this.getCodigoSeguridad());
             if (solicitudesAux.isEmpty()) {
                 this.setTitle("Resultado del Chequeo...");
                 this.setImages("glyphicon glyphicon-remove-circle");
-                this.setMsgSuccessError("Datos Incorrectos. El certificado no es válido.");
+                this.setMsgSuccessError("Datos Incorrectos. El certificado NO es VÁLIDO.");
                 this.setResultado("successErrorSolicitudCertificado");
             } else {
-                this.setMsgSuccessError("El certificado es válido.");
+                this.setMsgSuccessError("El certificado es VÁLIDO.");
                 this.setResultado("successErrorSolicitudCertificado");
                 this.setTitle("Proceso Completo...");
                 this.setImages("glyphicon glyphicon-ok-circle");
@@ -428,8 +430,14 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
     public String getNroAleatorio() {
         Random rnd = new Random();
-        int numero = (int) (rnd.nextDouble() * 9999 + 1000);
+        int numero = (int) (rnd.nextDouble() * 99999 + 10000);
         return String.valueOf(numero);
+    }
+
+    public String generateRandomText() {
+        SecureRandom random = new SecureRandom();
+        String text = new BigInteger(40, random).toString(32);
+        return text.toUpperCase();
     }
 
     public Resource getImprimirCertificado() throws JRException, FileNotFoundException, IOException {
@@ -440,12 +448,12 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             Leyenda leyendaAux = this.leyendaFacade.findByAnio(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             this.setEstadoCertificado(this.estadoCertificadoFacade.find(2L)); //ESTADO EMITIDO
             /*seteo el path para guardar el certificado*/
-            this.setPathCertificadoEnviar("/home/DatosDPJ/Certificado " + this.getEntidad().getCodigo() + this.getNroBoleta1() + ".pdf");
+            this.setPathCertificadoEnviar("/home/DatosDPJ/Certificado-" + this.getEntidad().getCodigo() + this.getNroBoleta1() + ".pdf");
             /*agrega codigo de seguridad al reporte*/
             List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.findByNroBoleta(this.getNroBoleta1(), this.getNroBoleta2());
             SolicitudCertificado soliAux = solicitudesAux.get(0);
-            this.setCodigoSeguridad(this.getNroAleatorio());
-            soliAux.setCodigoSeguridad(Long.parseLong(this.getCodigoSeguridad()));
+            this.setCodigoSeguridad(this.generateRandomText());
+            soliAux.setCodigoSeguridad(this.getCodigoSeguridad());
             soliAux.setPathArchivo(this.getPathCertificadoEnviar());
             soliAux.setEstadoCertificado(this.getEstadoCertificado());
             this.solicitudCertificadoFacade.edit(soliAux);
