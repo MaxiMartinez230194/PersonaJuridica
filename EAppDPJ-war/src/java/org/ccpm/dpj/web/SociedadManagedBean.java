@@ -14,7 +14,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -80,6 +79,8 @@ public class SociedadManagedBean extends UtilManagedBean implements Serializable
 
     private List<ActionItem> lstActionItems = new ArrayList<ActionItem>();
     private Object date;
+    
+    private int tamanioListElement;
 
     /**
      * Creates a new instance of EntidadManagedBean
@@ -130,6 +131,15 @@ public class SociedadManagedBean extends UtilManagedBean implements Serializable
             throw new Exception("Error al recuperar las acciones del usuario");
         }
     }
+    
+    public int getTamanioListElement() {
+        return this.getListElements().size();
+    }
+
+    public void setTamanioListElement(int tamanioListElement) {
+        this.tamanioListElement = tamanioListElement;
+    }
+
 
     public String getDni() {
         return dni;

@@ -74,7 +74,7 @@ and open the template in the editor.
                             </h:panelGrid>
                         </div>
                     </ace:panel>
-
+                     <h:outputText value="Mostrando #{sociedadManagedBean.tamanioListElement} Sociedad/es" style="float: left;font-family: sans-serif;font-size: 16px"/>
                     <ace:dataTable id="list" value="#{sociedadManagedBean.listElements}" var="item" rows="10" paginator="true" paginatorPosition="bottom"  style="margin-top: 10px;">
 
                         <ace:column id="codigo" headerText="CÓDIGO" style="width: 7%">
