@@ -26,7 +26,6 @@ import org.ccpm.dpj.entity.Configuracion;
  */
 @Stateless
 public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFacadeLocal {
-
     @PersistenceContext(unitName = "EAppDPJ-ejbPU")
     private EntityManager em;
 
@@ -38,7 +37,7 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
     private TipoEntidadFacadeLocal tipoEntidad;
     @EJB
     private ConfiguracionFacadeLocal configuracionFacade;
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -47,30 +46,18 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
     public EntidadFacade() {
         super(Entidad.class);
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<Entidad> findAll(boolean estado) {
+    public List <Entidad> findAll(boolean estado) {
         Query consulta = em.createQuery("select object(o) from Entidad as o WHERE o.estado = :p1 ORDER BY o.id desc");
         consulta.setParameter("p1", estado);
         return consulta.getResultList();
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<Entidad> findByCodigo(String codigo) {
-        StringBuilder codigoAux = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        codigoAux.append("A-"); //Por ahora solo asociaciones
-        codigoAux.append(codigo);
-        query.append("select object(o) from Entidad as o WHERE o.estado = true  AND o.codigo LIKE '").append(codigoAux.toString()).append("'  ORDER BY o.id desc");
-        Query consulta = em.createQuery(query.toString());
-        return consulta.getResultList();
-    }
-
-    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    @Override
-    public List<Entidad> findAll(boolean estado, Long tipoEntidad) {
+    public List <Entidad> findAll(boolean estado, Long tipoEntidad) {
         Query consulta = em.createQuery("select object(o) from Entidad as o WHERE o.estado = :p1 AND o.tipoEntidad.id= :p2 ORDER BY o.id desc");
         consulta.setParameter("p1", estado);
         consulta.setParameter("p2", tipoEntidad);
@@ -79,54 +66,55 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<Entidad> findAll(String nombre, String codigo, Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb, Long idEstadoEntidad, Long idTipoEntidad) {
+    public List <Entidad> findAll(String nombre,String codigo,Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb,Long idEstadoEntidad, Long idTipoEntidad) {
         StringBuilder query = new StringBuilder();
         query.append("select object(o) FROM Entidad as o WHERE o.estado = true");
-
+        
         if (!(nombre.equals(""))) {
-            query.append(" and o.nombre LIKE '%").append(nombre.toUpperCase()).append("%'");
-        }
-
+           query.append(" and o.nombre LIKE '%").append(nombre.toUpperCase()).append("%'");
+        } 
+        
         if (!(codigo.equals(""))) {
-            query.append(" and o.codigo LIKE '%").append(codigo.toUpperCase()).append("%'");
-        }
-
-        if (idMunicipio != 0L) {
+           query.append(" and o.codigo LIKE '%").append(codigo.toUpperCase()).append("%'");
+        } 
+        
+        if (idMunicipio!=0L) {
             query.append(" AND o.municipio.id =").append(idMunicipio);
         }
-
+        
         if (!(direccion.equals(""))) {
-            query.append(" and o.direccion LIKE '%").append(direccion.toUpperCase()).append("%'");
+           query.append(" and o.direccion LIKE '%").append(direccion.toUpperCase()).append("%'");
         }
-
+        
         if (!(telefono.equals(""))) {
-            query.append(" and o.telefono LIKE '%").append(telefono).append("%'");
+           query.append(" and o.telefono LIKE '%").append(telefono).append("%'");
         }
-
+        
         if (!(correo.equals(""))) {
-            query.append(" and o.correo LIKE '%").append(correo).append("%'");
+           query.append(" and o.correo LIKE '%").append(correo).append("%'");
         }
-
+        
         if (!(paginaWeb.equals(""))) {
-            query.append(" and o.paginaWeb LIKE '%").append(paginaWeb).append("%'");
+           query.append(" and o.paginaWeb LIKE '%").append(paginaWeb).append("%'");
         }
-
-        if (idEstadoEntidad != 0L) {
+        
+        if (idEstadoEntidad!=0L) {
             query.append(" AND o.estadoEntidad.id =").append(idEstadoEntidad);
         }
-        if (idTipoEntidad != 0L) {
+        if (idTipoEntidad!=0L) {
             query.append(" AND o.tipoEntidad.id =").append(idTipoEntidad);
         }
-
-        query.append(" ORDER BY o.id desc");
+        
+        query.append( " ORDER BY o.id desc");
         //System.out.println("facadeEntidad---"+query);
         Query consulta = em.createQuery(query.toString());
         return consulta.getResultList();
-
+        
+        
     }
-
+   
     @Override
-    public void edit(Long idEntidad, String nombre, String codigo, Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb, Long idEstadoEntidad, Date fechaAlta, Long idTipoEntidad, Date fechaBaja, String dni, String nombreReserva) throws Exception {
+    public void edit(Long idEntidad, String nombre,String codigo,Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb,Long idEstadoEntidad, Date fechaAlta, Long idTipoEntidad, Date fechaBaja, String dni, String nombreReserva) throws Exception {
         try {
             Estado estadoEntidadAux = this.estadoEntidad.find(idEstadoEntidad);
             TipoEntidad tipoEntidadAux = this.tipoEntidad.find(idTipoEntidad);
@@ -154,7 +142,7 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
     }
 
     @Override
-    public void create(String nombre, String codigo, Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb, Long idEstadoEntidad, Date fechaAlta, Long idTipoEntidad, Date fechaBaja, String dni, String nombreReserva) throws Exception {
+    public void create(String nombre,String codigo,Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb,Long idEstadoEntidad, Date fechaAlta, Long idTipoEntidad, Date fechaBaja,String dni, String nombreReserva) throws Exception {
         try {
             Estado estadoEntidadAux = this.estadoEntidad.find(idEstadoEntidad);
             TipoEntidad tipoEntidadAux = this.tipoEntidad.find(idTipoEntidad);
@@ -181,7 +169,7 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
             throw new Exception("Error al intentar crear la Entidad");
         }
     }
-
+    
     @Override
     public void remove(Long idEntidad) throws Exception {
         try {
@@ -192,51 +180,53 @@ public class EntidadFacade extends AbstractFacade<Entidad> implements EntidadFac
             throw new Exception("Error al intentar borrar la Entidad");
         }
     }
-
-    public List<Entidad> findCodigo(String nombre, String codigo, Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb, Long idEstadoEntidad, Long idTipoEntidad) {
+    
+    
+    public List <Entidad> findCodigo(String nombre,String codigo,Long idMunicipio, String direccion, String telefono, String correo, String paginaWeb,Long idEstadoEntidad, Long idTipoEntidad) {
         StringBuilder query = new StringBuilder();
         query.append("select object(o) FROM Entidad as o WHERE o.estado = true");
-
+        
         if (!(nombre.equals(""))) {
-            query.append(" and o.nombre LIKE '%").append(nombre.toUpperCase()).append("%'");
-        }
-
+           query.append(" and o.nombre LIKE '%").append(nombre.toUpperCase()).append("%'");
+        } 
+        
         if (!(codigo.equals(""))) {
-            query.append(" and o.codigo LIKE '").append(codigo.toUpperCase()).append("'");
-        }
-
-        if (idMunicipio != 0L) {
+           query.append(" and o.codigo LIKE '").append(codigo.toUpperCase()).append("'");
+        } 
+        
+        if (idMunicipio!=0L) {
             query.append(" AND o.municipio.id =").append(idMunicipio);
         }
-
+        
         if (!(direccion.equals(""))) {
-            query.append(" and o.direccion LIKE '%").append(direccion.toUpperCase()).append("%'");
+           query.append(" and o.direccion LIKE '%").append(direccion.toUpperCase()).append("%'");
         }
-
+        
         if (!(telefono.equals(""))) {
-            query.append(" and o.telefono LIKE '%").append(telefono).append("%'");
+           query.append(" and o.telefono LIKE '%").append(telefono).append("%'");
         }
-
+        
         if (!(correo.equals(""))) {
-            query.append(" and o.correo LIKE '%").append(correo).append("%'");
+           query.append(" and o.correo LIKE '%").append(correo).append("%'");
         }
-
+        
         if (!(paginaWeb.equals(""))) {
-            query.append(" and o.paginaWeb LIKE '%").append(paginaWeb).append("%'");
+           query.append(" and o.paginaWeb LIKE '%").append(paginaWeb).append("%'");
         }
-
-        if (idEstadoEntidad != 0L) {
+        
+        if (idEstadoEntidad!=0L) {
             query.append(" AND o.estadoEntidad.id =").append(idEstadoEntidad);
         }
-        if (idTipoEntidad != 0L) {
+        if (idTipoEntidad!=0L) {
             query.append(" AND o.tipoEntidad.id =").append(idTipoEntidad);
         }
-
-        query.append(" ORDER BY o.id desc");
+        
+        query.append( " ORDER BY o.id desc");
         //System.out.println("facadeEntidad---"+query);
         Query consulta = em.createQuery(query.toString());
         return consulta.getResultList();
-
+        
+        
     }
-
+    
 }

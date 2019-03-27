@@ -14,7 +14,7 @@
                                 <span class="#{parteDiarioManagedBean.images}"></span>
                             </td>
                             <td align="left">
-                                <h:outputLabel value="#{parteDiarioManagedBean.msgSuccessError}"/>
+                                <h:outputLabel value="#{parteDiarioManagedBean.msgSuccessError}, se han actualizado #{parteDiarioManagedBean.totalDeBoletasActualizadas} Boletas"/>
                             </td> 
                             <td align="left">
                                  <ace:dynamicResource id="dynamicResource"
@@ -28,7 +28,17 @@
                                                                  />
                                 
                             </td>
+                            <td align="left">
+                                <h:outputLabel value="se han actualizado: " />
+                            </td>
+                            <td align="right">
+                                <h:outputLabel value="#{parteDiarioManagedBean.totalDeBoletasActualizadas} Boletas"/>
+                            </td>
                         </tr>
+                        <tr>
+                            
+                        </tr>
+                       
                         
                         
                      </table>                    

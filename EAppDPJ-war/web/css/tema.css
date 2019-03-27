@@ -209,10 +209,7 @@ a .yui-button .yui-link-button .ui-button .ui-widget-{
     color:#fff;
 }
 
-/*Para columnas certificadoWEB*/
-
-
-
+/* Interaction Cues
 ----------------------------------*/
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
@@ -264,78 +261,6 @@ a .yui-button .yui-link-button .ui-button .ui-widget-{
 }
 .ui-state-disabled .ui-icon {
 	filter:Alpha(Opacity=35); /* support: IE8 - See #6059 */
-}
-
-
-.jumbotron {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    margin-bottom: 30px !important;
-    color: inherit;
-    background-color: #eee;
-}
-.jumbotron h1,
-.jumbotron .h1 {
-    color: inherit;
-}
-.jumbotron p {
-    margin-bottom: 15px;
-    font-size: 21px;
-    font-weight: 200;
-}
-.jumbotron > hr {
-    border-top-color: #d5d5d5;
-}
-.container .jumbotron,
-.container-fluid .jumbotron {
-    padding-right: 15px;
-    padding-left: 15px;
-    border-radius: 6px;
-}
-.jumbotron .container {
-    max-width: 100%;
-}
-@media screen and (min-width: 768px) {
-    .jumbotron {
-        padding-top: 130px;
-        padding-bottom: 130px;
-    }
-    .container .jumbotron,
-    .container-fluid .jumbotron {
-        padding-right: 60px;
-        padding-left: 60px;
-    }
-    .jumbotron h1,
-    .jumbotron .h1 {
-        font-size: 63px;
-    }
-}
-
-.bg-img {
-    background-image: linear-gradient( rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45) ), url("../images/posadas.jpg");
-    background-position: center top;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    position: relative;
-    z-index: -10;
-}
-
-.jumbotron .jumbotron_body p{
-    font-size: 20px;
-    line-height: 27px;
-    text-shadow: 0 2px 2px rgba(0,0,0,0.5);
-    font-weight: 300; 
-    color: #fff;
-}
-
-h2{
-    color: #fff;
-    text-shadow: 0 2px 2px rgba(0,0,0,0.5);
-    font-weight: 700;
-    margin-bottom: .3em;
-    margin-top: 0;
-    text-transform: none;
-    font-size: 50px;
 }
 
 /* Icons
@@ -1460,65 +1385,5 @@ border: none !important;
 
 .semaforoVerde:hover{
 background:  url("../images/indicador.png") -225px 35px !important;
-
-}
-.botonGrande button{
-    font-family: 'Montserrat', sans-serif !important;
-    border: none !important;
-    width: 200px !important;
-    height: 230px !important;
-}
-
-.botonGrande .ui-button{
-    display: inline-block !important;
-    vertical-align: top !important;
-    border-radius: 2% !important;
-    margin-bottom: 20px !important;
-    color: #111 !important;
-    cursor: pointer !important;
-    font-size: 3em !important;
-    outline: 0 !important;
-    /*border-radius: 50% !important;  */
-    background: #ececec !important;
-    transition: box-shadow .25s ease !important;
-    transition: .1s linear !important;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, .2);
-}
-
-.botonGrande .ui-state-hover,
-.ui-state-focus{
-    background: #0695d6 !important;
-    font-weight: bold;
-    color: #ffffff !important;
-    -webkit-box-shadow: 0px 0px 10px 4px rgba(102,102,102,0.5);
-
-}
-
-
-.botonChico button{
-    font-family: 'Montserrat', sans-serif !important;
-    border: none !important;
-}
-
-.botonChico .ui-button{
-    display: inline-block !important;
-    vertical-align: top !important;
-    border-radius: 2% !important;
-    color: #111 !important;
-    cursor: pointer !important;
-    outline: 0 !important;
-    font-size: 1.5em !important;
-    background: #ececec !important;
-    transition: box-shadow .25s ease !important;
-    transition: .05s linear !important;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, .2);
-}
-
-.botonChico .ui-state-hover,
-.ui-state-focus{
-    background: #0695d6 !important;
-    font-weight: bold;
-    border-radius: 2% !important;
-    color: #ffffff !important;
 
 }

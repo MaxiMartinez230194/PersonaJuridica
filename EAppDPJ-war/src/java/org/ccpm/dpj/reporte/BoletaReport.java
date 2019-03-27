@@ -25,96 +25,72 @@ import net.sf.jasperreports.engine.util.JRLoader;
  * @author Alvarenga Angel
  */
 public class BoletaReport {
-
-    private JasperPrint masterPrint = null;
+   private JasperPrint masterPrint = null;
     private static java.net.URL url = null;
     private static JasperReport masterReport = null;
     private static Map parametros = new HashMap();
     private static Connection conexion;
-
+        
     public BoletaReport() {
     }
 
     public JasperPrint imprimirBoleta(String nroBoleta) throws Exception, JRException {
-        try {
-
+        try { 
+          
             InitialContext context = new InitialContext();
             DataSource dataSource = (DataSource) context.lookup("jdbc/dpj");
             conexion = dataSource.getConnection();
             url = this.getClass().getResource("/org/ccpm/dpj/reporte/reporte.jasper");
-            parametros.put("Boleta", nroBoleta);
+            parametros.put("Boleta", nroBoleta); 
             parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
-
+           
+           
             masterReport = (JasperReport) JRLoader.loadObject(url);
             masterPrint = JasperFillManager.fillReport(masterReport, parametros, conexion);
-        } catch (NamingException | SQLException | JRException e) {
+        } catch (NamingException | SQLException | JRException e) {            
             throw new Exception(e.getMessage());
         }
         conexion.close();
         return masterPrint;
     }
-
-    public JasperPrint imprimirReporteDiario(Date fecha, BigDecimal comis) throws Exception, JRException {
-        try {
+    
+    public JasperPrint imprimirReporteDiario(Date fecha,BigDecimal comis,Long idParte) throws Exception, JRException {
+        try {     
             InitialContext context = new InitialContext();
             DataSource dataSource = (DataSource) context.lookup("jdbc/dpj");
             conexion = dataSource.getConnection();
             url = this.getClass().getResource("/org/ccpm/dpj/reporte/diario.jasper");
-            parametros.put("fecha", fecha);
+            parametros.put("fecha", fecha); 
             parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
-            parametros.put("comis", comis);
+            parametros.put("comis",comis );
+            parametros.put("idParte", idParte);
             masterReport = (JasperReport) JRLoader.loadObject(url);
             masterPrint = JasperFillManager.fillReport(masterReport, parametros, conexion);
-        } catch (NamingException | SQLException | JRException e) {
+        } catch (NamingException | SQLException | JRException e) {            
             throw new Exception(e.getMessage());
         }
         conexion.close();
         return masterPrint;
-
-    }
-
-    public JasperPrint imprimirReporteMensual(int mes, int anio, BigDecimal comis) throws Exception, JRException {
-        try {
+    
+}
+    
+     public JasperPrint imprimirReporteMensual(int mes,int anio,BigDecimal comis) throws Exception, JRException {
+        try {     
             InitialContext context = new InitialContext();
             DataSource dataSource = (DataSource) context.lookup("jdbc/dpj");
             conexion = dataSource.getConnection();
             url = this.getClass().getResource("/org/ccpm/dpj/reporte/mensual.jasper");
-            parametros.put("mes", mes);
+            parametros.put("mes", mes); 
             parametros.put("anio", anio);
             parametros.put("comis", comis);
             parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
             masterReport = (JasperReport) JRLoader.loadObject(url);
             masterPrint = JasperFillManager.fillReport(masterReport, parametros, conexion);
-        } catch (NamingException | SQLException | JRException e) {
+        } catch (NamingException | SQLException | JRException e) {            
             throw new Exception(e.getMessage());
         }
         conexion.close();
         return masterPrint;
-
-    }
-
-    public JasperPrint imprimirCertificado(String nombreEntidad, String nroEntidad, Long nroBoleta1, Long nroBoleta2, String leyenda, String anio, String codigoSeguridad) throws Exception, JRException {
-        try {
-            InitialContext context = new InitialContext();
-            DataSource dataSource = (DataSource) context.lookup("jdbc/dpj");
-            conexion = dataSource.getConnection();
-            url = this.getClass().getResource("/org/ccpm/dpj/reporte/certificadoEntidad.jasper");
-            parametros.put("nombreEntidad", nombreEntidad);
-            parametros.put("nroBoleta1", nroBoleta1);
-            parametros.put("nroBoleta2", nroBoleta2);
-            parametros.put("pathimagen", getClass().getResource("escudito.jpg").getPath());
-            parametros.put("pathsello", getClass().getResource("sello.jpg").getPath());
-            parametros.put("leyendaProvincia", "'" + leyenda + "'");
-            parametros.put("anio", anio);
-            parametros.put("nroEntidad", nroEntidad);
-            parametros.put("codigoSeguridad", codigoSeguridad);
-            masterReport = (JasperReport) JRLoader.loadObject(url);
-            masterPrint = JasperFillManager.fillReport(masterReport, parametros, conexion);
-        } catch (NamingException | SQLException | JRException e) {
-            throw new Exception(e.getMessage());
-        }
-        conexion.close();
-        return masterPrint;
-
-    }
+    
+}
 }

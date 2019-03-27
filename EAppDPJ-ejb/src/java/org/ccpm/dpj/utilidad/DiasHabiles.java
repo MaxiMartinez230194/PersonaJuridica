@@ -11,6 +11,9 @@ package org.ccpm.dpj.utilidad;
  */
 
 
+import static java.lang.Math.random;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -432,7 +435,7 @@ public class DiasHabiles {
          System.out.println("numero de sabados y domingos"+resultado);
          String fecharesul=da.getDatePlusDays(fechainicial,15);
          System.out.println("Fecha resultado de sumar los dias"+fecharesul);
-         
+        
 
      }
 

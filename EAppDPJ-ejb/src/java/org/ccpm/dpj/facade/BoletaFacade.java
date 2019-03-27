@@ -30,7 +30,6 @@ import org.ccpm.dpj.utilidad.Utilidad;
  */
 @Stateless
 public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacadeLocal {
-
     @PersistenceContext(unitName = "EAppDPJ-ejbPU")
     private EntityManager em;
 
@@ -40,7 +39,9 @@ public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacade
     private EstadoBoletaFacadeLocal estadoBoletaFacade;
     @EJB
     private ItemBoletaFacadeLocal itemBoletaFacade;
-
+    
+    
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -49,67 +50,69 @@ public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacade
     public BoletaFacade() {
         super(Boleta.class);
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<Boleta> findAll(boolean estado) {
+    public List <Boleta> findAll(boolean estado) {
         Query consulta = em.createQuery("select object(o) from Boleta as o WHERE o.estado = :p1 order by o.fechaEmision asc");
         consulta.setParameter("p1", estado);
         return consulta.getResultList();
     }
-
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<Boleta> findAll(Long nroCorrelativo, Date fechaEmDesde, Date fechaEmHasta,
-            Date fechaPagoDesde, Date fechaPagoHasta, Long idEstado) {
+    public List <Boleta> findAll(Long nroCorrelativo, Date fechaEmDesde, Date fechaEmHasta,
+    Date fechaPagoDesde, Date fechaPagoHasta, Long idEstado) {        
         StringBuilder query = new StringBuilder();
-        query.append("select object(o) FROM Boleta as o WHERE o.estado = true");
-        if (nroCorrelativo != null) {
+        query.append("select object(o) FROM Boleta as o WHERE o.estado = true");        
+        if(nroCorrelativo != null){
             query.append(" and o.nroCorrelativo =").append(nroCorrelativo);
         }
-        if (fechaEmDesde != null && fechaEmHasta != null) {
+        if(fechaEmDesde != null && fechaEmHasta != null){
             query.append(" and o.fechaEmision BETWEEN :start AND :end");
         }
-        if (fechaPagoDesde != null && fechaPagoHasta != null) {
+        if(fechaPagoDesde != null && fechaPagoHasta != null){
             query.append(" and o.fechaPago BETWEEN :start AND :end");
         }
-        if (idEstado != null) {
+        if(idEstado != null){
             query.append(" and o.estadoBoleta.id =").append(idEstado);
         }
         query.append(" ORDER BY o.fechaEmision DESC");
         Query consulta = em.createQuery(query.toString());
-        if (fechaEmDesde != null && fechaEmHasta != null) {
+        if(fechaEmDesde != null && fechaEmHasta != null){
             consulta.setParameter("start", fechaEmDesde, TemporalType.TIMESTAMP);
             consulta.setParameter("end", fechaEmHasta, TemporalType.TIMESTAMP);
         }
-        if (fechaPagoDesde != null && fechaPagoHasta != null) {
+        if(fechaPagoDesde != null && fechaPagoHasta != null){
             consulta.setParameter("start", fechaPagoDesde, TemporalType.TIMESTAMP);
             consulta.setParameter("end", fechaPagoHasta, TemporalType.TIMESTAMP);
-        }
+        }        
         //System.out.println("facade boleta--> "+query);
         return consulta.getResultList();
     }
-
+    
     @Override
-    public List<Long> create(List<TasaServicioUI> lstTasaUI) throws Exception {
+    public List <Long> create(List<TasaServicioUI> lstTasaUI) throws Exception {        
         Long nro = 1L;  //devuelve una lista los nroCorrelativos de las tasas cambios 01/06/2017
-        List<Long> nro2 = new ArrayList<Long>();
-
+        List <Long> nro2=new ArrayList <Long>();
+        
         try {
-
-            if (!lstTasaUI.isEmpty()) {
-                int i = 0;
-
-                for (TasaServicioUI tasaServicioUIAux : lstTasaUI) {
-
-                    if (tasaServicioUIAux.isSelect()) {
+            
+            if(!lstTasaUI.isEmpty()){
+                int i =0;
+                
+                for(TasaServicioUI tasaServicioUIAux : lstTasaUI){
+                    
+                  
+                    
+                    if(tasaServicioUIAux.isSelect()){
                         Boleta boletaAux = new Boleta();
                         EstadoBoleta estadoBoletaAux = this.estadoBoletaFacade.find(1L);//1L = estado generada ver BD
                         Long nroCorrelAux = this.generarNroCorrelativo();
                         boletaAux.setEstado(true);
                         boletaAux.setFechaEmision(new Date());
                         boletaAux.setTotal(0.0);
-                        boletaAux.setNroCorrelativo(nroCorrelAux);
+                        boletaAux.setNroCorrelativo(nroCorrelAux);  
                         boletaAux.setEstadoBoleta(estadoBoletaAux);
                         TasaServicio tasaAux = this.tasaFacade.find(tasaServicioUIAux.getId());
                         ItemBoleta itemBoletaAux = new ItemBoleta();
@@ -118,40 +121,26 @@ public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacade
                         itemBoletaAux.setMonto(tasaAux.getMonto());
                         this.itemBoletaFacade.create(itemBoletaAux);
                         boletaAux.getItems().add(itemBoletaAux);
-                        boletaAux.setTotal(boletaAux.getTotal() + itemBoletaAux.getMonto());
+                        boletaAux.setTotal(boletaAux.getTotal() + itemBoletaAux.getMonto());   
                         boletaAux.setTotalLetras(Utilidad.convertir(boletaAux.getTotal().toString(), true));
                         this.create(boletaAux);
-                        nro = boletaAux.getNroCorrelativo();
+                        nro=boletaAux.getNroCorrelativo();
                         nro2.add(nro);
                         //System.out.println("listtt---> "+nro2.get(i).toString());
-
+                        
+                        
+                        
                     }
                 }
             }
-
+            
         } catch (Exception e) {
-            System.out.println("errorrrr--> " + e.getMessage());
+            System.out.println("errorrrr--> "+e.getMessage());
             throw new Exception("Error al intentar crear la boleta");
         }
         return nro2;
     }
     
-    @Override
-    public boolean verificarPago(Long nroCorrelativo1, Long nroCorrelativo2) {
-    try {
-            Query consulta = em.createQuery("select object(o) from Boleta as o WHERE o.estado = true and o.nroCorrelativo = :p1 ");
-            Query consulta1 = em.createQuery("select object(o) from Boleta as o WHERE o.estado = true and o.nroCorrelativo = :p2 ");
-            consulta.setParameter("p1", nroCorrelativo1);
-            consulta.setParameter("p2", nroCorrelativo2);
-            Boleta boletaAux = (Boleta) consulta.getSingleResult();
-            Boleta boleta1Aux = (Boleta) consulta1.getSingleResult();
-            
-            return boletaAux.getEstadoBoleta().getId() == 3 && boleta1Aux.getEstadoBoleta().getId() == 3;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
     private Long generarNroCorrelativo() {
         Long nro = 1L;
         try {
@@ -163,29 +152,36 @@ public class BoletaFacade extends AbstractFacade<Boleta> implements BoletaFacade
         }
         return nro;
     }
-
+    
+    
+    
     //cambios domingo 28 de mayo 2017 by facu
+    
     @Override
     public Boleta findAllIn(boolean estado, Long idNroCorrelativo) {
-        try {
-            Query consulta = em.createQuery("select object(o) from Boleta as o WHERE o.estado = :p1 and o.nroCorrelativo = :p2 ");
-            consulta.setParameter("p1", estado);
-            consulta.setParameter("p2", idNroCorrelativo);
-            return (Boleta) consulta.getSingleResult();
-        } catch (Exception ex) {
-            return null;
-        }
+        
+        Query consulta = em.createQuery("select object(o) from Boleta as o WHERE o.estado = :p1 and o.nroCorrelativo = :p2 ");
+        consulta.setParameter("p1", estado);
+        consulta.setParameter("p2", idNroCorrelativo);
+        //System.out.println(consulta.getSingleResult().toString());
+        return (Boleta) consulta.getSingleResult();
     }
     
     
-
-    //cambios lunes 05 de junio 2017
+     //cambios lunes 05 de junio 2017
+    
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
-    public List<ParteDiario> findAllBoletas(Long idParteDiario) {
-
-        return (List<ParteDiario>) em.createQuery("select object(o) FROM Boleta as o WHERE o.estado = true AND o.parteDiario.id= " + idParteDiario).getResultList();
+    public List <ParteDiario> findAllBoletas(Long idParteDiario) {
+        
+        return (List<ParteDiario>) em.createQuery("select object(o) FROM Boleta as o WHERE o.estado = true AND o.parteDiario.id= "+idParteDiario ).getResultList();
     }
+    
+    
+    
+       
+    }
+    
+    
+    
 
-
-}

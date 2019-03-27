@@ -79,10 +79,13 @@ and open the template in the editor.
                                     
                     <ace:dataTable id="listParteDiario" value="#{parteDiarioManagedBean.listElements}" var="item" paginator="true" paginatorPosition="bottom" rows="10" class="panel-buttons">
 
-                         <ace:column id="idNombreParte" headerText="Nombre Archivo" style="width: 7%">
-                             <center>
+                         
+                        
+                        <ace:column id="idNombreParte" headerText="Nombre Archivo" style="width: 7%">
+                             
+                            <center>
                                 <strong>
-                                   <h:outputText id="cellidNombreParte" value="#{item.url.subSequence(15, 35)}"/>
+                                    <h:outputText id="cellidNombreParte" value="#{item.url}"/>
                                 </strong>       
                              </center>
                             
@@ -125,7 +128,7 @@ and open the template in the editor.
                                
                                
                                
-                               <ace:pushButton id="cargarFecha"  actionListener="#{parteDiarioManagedBean.setearFechaParaReporte(item.fechaPago)}" action="#{parteDiarioManagedBean.generarReporteDiario()}">
+                               <ace:pushButton id="cargarFecha"  actionListener="#{parteDiarioManagedBean.setearFechaParaReporte(item.fechaPago,item.id)}" action="#{parteDiarioManagedBean.generarReporteDiario()}">
                                                 <span class="glyphicon glyphicon-print"></span>
                                 </ace:pushButton>
                             

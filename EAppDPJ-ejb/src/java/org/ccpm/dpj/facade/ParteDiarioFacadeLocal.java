@@ -8,6 +8,7 @@ package org.ccpm.dpj.facade;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import org.ccpm.dpj.entity.Boleta;
 import org.ccpm.dpj.entity.ParteDiario;
 
 /**
@@ -35,17 +36,19 @@ public interface ParteDiarioFacadeLocal {
 
     public List<ParteDiario> findAll(String url);
 
-    public void create(String url, Date fecha, Date fechaPago,Date fechaDeposito) throws Exception;
+    public void create(String url, Date fecha, Date fechaPago,Date fechaDeposito,List<Boleta> boletas) throws Exception;
 
     public void remove(Long idParteDiario) throws Exception;
 
     public void edit(Long idParteDiario, String url, Date fecha) throws Exception;
     
-    public String registrarPagosBoletas(Long nroBoleta);
+    public String registrarPagosBoletas(Long nroBoleta,Date fechaPago);
     
     public List <ParteDiario> devuelveParteDiariosPorMes(int mes,int anio) ;
     
-     public boolean existeParteDiario(String url) ;
+    public boolean existeParteDiario(String url) ;
      
-      public boolean existeParteDiarioConFechaDeposito(Date fecha);
+    public boolean existeParteDiarioConFechaDeposito(Date fecha);
+    
+    public void setearFechaPagoUltimoParteDiario(Date fechaPago);
 }

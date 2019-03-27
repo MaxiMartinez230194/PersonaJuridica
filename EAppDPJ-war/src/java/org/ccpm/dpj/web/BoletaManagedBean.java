@@ -59,7 +59,7 @@ public class BoletaManagedBean extends UtilManagedBean implements Serializable{
     private List <ParteDiario> parteDiarioList = new ArrayList <ParteDiario>();
     private List <ParteDiario> listaParteDiario;
     private int tamanioListElement;
-    
+   
     
     /** Creates a new instance of BoletaTasaManagedBean */
     public BoletaManagedBean() {
@@ -108,10 +108,6 @@ public class BoletaManagedBean extends UtilManagedBean implements Serializable{
             throw new Exception("Error al recuperar las acciones del usuario");
         }
     }
-
-   
-    
-    
 
     public String getNroBoleta() {
         Modulo11 asd = new Modulo11();

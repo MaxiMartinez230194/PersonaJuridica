@@ -9,7 +9,6 @@ and open the template in the editor.
 */
 
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans');
-@import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {
     font-family: "Noto Sans";
@@ -39,6 +38,7 @@ body {
     padding-right: 0.5%;
     padding-bottom: 0.5%;
     padding-top: 0.5%;
+    border-top: 0.5px solid #737578;
 }
 
 .footer-top {
@@ -59,7 +59,7 @@ body {
     padding-left: 10px;
     padding-right: 5px; 
     border-bottom: 1px solid #737578;
-
+    
 }
 
 .content{
@@ -73,17 +73,8 @@ body {
     padding-top: 20px;
 }
 
-.contentPublico{    
-    font-family: "Roboto","Helvetica Neue","Helvetica","Arial",sans-serif;
-    height: auto;
-    padding-left: 10px;
-    padding-right: 5px;
-    padding-bottom: 25px;
-    padding-top: 20px;
-}
-
 .img-circle {
-    border-radius: 50%;
+  border-radius: 50%;
 }
 
 .panel-buttons{
@@ -94,7 +85,7 @@ body {
 .panel-message{
     margin-top: 15px;
     margin-bottom: 15px;
-    font-size: 1.2em !important;
+    font-size: 1.5em;
 }
 
 .panel-column-data-left{
@@ -106,19 +97,19 @@ body {
 } 
 
 .boton {
-    border: 1px solid #0088cc !important;
-    background: #00aaee !important;
-    font-weight: bold;
-    color: #FFFFFF !important;
-    padding: 5px;
+	border: 1px solid #0088cc !important;
+	background: #00aaee !important;
+	font-weight: bold;
+	color: #FFFFFF !important;
+        padding: 5px;
 }
 
 .boton .ui-state-hover,
 .boton .ui-state-focus{
-    border: 1px solid #00aaee !important;
-    background: #07BAFF !important;
-    font-weight: bold;
-    color: #FFFFFF !important;
+	border: 1px solid #00aaee !important;
+	background: #07BAFF !important;
+	font-weight: bold;
+	color: #FFFFFF !important;
 }
 
 .buttonLogin{
