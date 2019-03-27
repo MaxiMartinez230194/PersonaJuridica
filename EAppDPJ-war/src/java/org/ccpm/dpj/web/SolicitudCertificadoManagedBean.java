@@ -282,29 +282,48 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(beanName);
     }
 
+//    public void buscarEntidad(String codigoEntidad) throws Exception {
+//        List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(codigoEntidad);
+//        if (entidadesAux.isEmpty()) {
+//            throw new Exception("No existe una Entidad con el Número de Personería Jurídica ingresado.");
+//        } else {
+//            for (Entidad entidadAux : entidadesAux) {
+//                if (entidadAux.getEstadoEntidad().getId() == 2) { //VERIFICA QUE EL ESTADO DE LA ENTIDAD SEA ACTIVO
+//
+//                    if (entidadAux.getCorreo() != null) { //VERIFICA QUE LA ENTIDAD TENGA UN EMAIL
+//                        if (isValidEmailAddress(entidadAux.getCorreo())) { //VERIFICA QUE EL EMAIL SEA CORRECTO
+//                            this.setIdEntidad(entidadAux.getId());
+//                            this.setEntidad(entidadAux);
+//                        } else {
+//                            throw new Exception("La entidad posee un correo electrónico incorrecto, comuníquese con los administradores del sistema.");
+//                        }
+//
+//                    } else {
+//                        throw new Exception("La entidad no tiene registrado un correo electrónico, comuníquese con los administradores del sistema.");
+//                    }
+//                } else {
+//                    throw new Exception("La entidad no se encuentra ACTIVA.");
+//                }
+//            }
+//        }
+//    }
+
     public void buscarEntidad(String codigoEntidad) throws Exception {
         List<Entidad> entidadesAux = this.entidadFacade.findByCodigo(codigoEntidad);
-        if (entidadesAux.isEmpty()) {
-            throw new Exception("No existe una Entidad con el código ingresado.");
-        } else {
+        if (!entidadesAux.isEmpty()) {
             for (Entidad entidadAux : entidadesAux) {
-                if (entidadAux.getEstadoEntidad().getId() == 2) { //VERIFICA QUE EL ESTADO DE LA ENTIDAD SEA ACTIVO
-
-                    if (entidadAux.getCorreo() != null) { //VERIFICA QUE LA ENTIDAD TENGA UN EMAIL
-                        if (isValidEmailAddress(entidadAux.getCorreo())) { //VERIFICA QUE EL EMAIL SEA CORRECTO
-                            this.setIdEntidad(entidadAux.getId());
-                            this.setEntidad(entidadAux);
-                        } else {
-                            throw new Exception("La entidad posee un correo electrónico incorrecto, comuníquese con los administradores del sistema.");
-                        }
-
-                    } else {
-                        throw new Exception("La entidad no tiene registrado un correo electrónico, comuníquese con los administradores del sistema.");
-                    }
+                if (entidadAux.getEstadoEntidad().getId() == 2 && entidadAux.getCorreo() != null && isValidEmailAddress(entidadAux.getCorreo())) {
+                    this.setIdEntidad(entidadAux.getId());
+                    this.setEntidad(entidadAux);
                 } else {
-                    throw new Exception("La entidad no se encuentra ACTIVA.");
+                    String msg = entidadAux.getEstadoEntidad().getId() != 2 ? "La entidad no se encuentra ACTIVA."
+                            : entidadAux.getCorreo() == null ? "La entidad no tiene registrado un correo electrónico, complete y presente el FORMULARIO o bien comuníquese con la Dirección de Personas Jurídicas." : !isValidEmailAddress(entidadAux.getCorreo())
+                                            ? "La entidad posee un correo electrónico incorrecto, comuníquese con la Dirección de Personas Jurídicas." : "";
+                    throw new Exception(msg);
                 }
             }
+        } else {
+            throw new Exception("No existe una Entidad con el Número de Personería Jurídica ingresado.");
         }
     }
 
@@ -313,7 +332,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         if (boletaAux != null) {
             ItemBoleta itemAux = boletaAux.getItems().get(0);
             if (!itemAux.getNombreTasa().equals("CERTIFICACIONES (C/U)")) {
-                throw new Exception("El número de la boleta ingresada no pertenece a la TASA CERTIFICACIONES (C/U).");
+                throw new Exception("El número de la boleta ingresada en TASA CERTIFICACIONES (C/U) no pertenece a esa tasa.");
             } else {
 
                 this.setBoleta1(boletaAux);
@@ -328,7 +347,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
         if (boletaAux != null) {
             ItemBoleta itemAux2 = boletaAux.getItems().get(0);
             if (!itemAux2.getNombreTasa().equals("TASA POR TODO TRAMITE")) {
-                throw new Exception("El número de la boleta ingresada no pertenece a la TASA POR TODO TRAMITE.");
+                throw new Exception("El número de la boleta ingresada en TASA POR TODO TRAMITE no pertenecea esa tasa.");
             } else {
                 this.setBoleta2(boletaAux);
             }
@@ -343,7 +362,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             for (SolicitudCertificado solicitudAux : solicitudesAux) {
                 switch (solicitudAux.getEstadoCertificado().getId().intValue()) {
                     case 1:
-                        throw new Exception("Ya realizó una SOLICITUD con los datos ingresados. Dentro de las 24 hs. hábiles se enviará el certificado a su correo electrónico.");
+                        throw new Exception("Ya realizó una SOLICITUD con los datos ingresados. Pasadas las 24 horas hábiles se enviará el certificado a su correo electrónico.");
                     case 2:
                         throw new Exception("Ya se ha EMITIDO un certificado con esos números de Boletas. Verifique el correo electrónico de su entidad.");
                 }
@@ -385,13 +404,13 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
 
             }
 
-            this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito. Dentro de las 24HS. se enviará a su correo electrónico.");
+            this.setMsgSuccessError("La solicitud de certificado ha sido generado con éxito. Pasadas las 24 horas hábiles se enviará a su correo electrónico en caso de que ya haya realizado el pago de las boletas.");
             this.setResultado("successErrorSolicitudCertificado");
             this.setTitle("Proceso Completo...");
             this.setImages("glyphicon glyphicon-ok-circle");
             this.limpiarAtributos();
         } catch (Exception ex) {
-            this.setTitle("Resultado del Chequeo...");
+            this.setTitle("Ups! Algo salió mal...");
             this.setImages("glyphicon glyphicon-remove-circle");
             this.setMsgSuccessError(ex.getMessage());
             this.setResultado("successErrorSolicitudCertificado");
@@ -408,7 +427,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             }
             List<SolicitudCertificado> solicitudesAux = this.solicitudCertificadoFacade.verificar(ids.toString().subSequence(0, ids.length() - 1).toString(), this.getCodigoSeguridad());
             if (solicitudesAux.isEmpty()) {
-                this.setTitle("Resultado del Chequeo...");
+                this.setTitle("Ups! Algo salió mal...");
                 this.setImages("glyphicon glyphicon-remove-circle");
                 this.setMsgSuccessError("Datos Incorrectos. El certificado NO es VÁLIDO.");
                 this.setResultado("successErrorSolicitudCertificado");
@@ -419,9 +438,9 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
                 this.setImages("glyphicon glyphicon-ok-circle");
             }
         } else {
-            this.setTitle("Resultado del Chequeo...");
+            this.setTitle("Ups! Algo salió mal...");
             this.setImages("glyphicon glyphicon-remove-circle");
-            this.setMsgSuccessError("Datos Incorrectos. No existe una entidad con ese código.");
+            this.setMsgSuccessError("Datos Incorrectos. No existe una entidad con ese Número de Personería Jurídica.");
             this.setResultado("successErrorSolicitudCertificado");
         }
 
@@ -493,7 +512,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             this.setImages("glyphicon glyphicon-ok-circle");
             this.limpiar();
         } catch (Exception ex) {
-            this.setTitle("Resultado del Chequeo...");
+            this.setTitle("Ups! Algo salió mal...");
             this.setImages("glyphicon glyphicon-remove-circle");
             this.setMsgSuccessError(ex.getMessage());
             this.setResultado("successErrorSolicitudCertificado");
@@ -524,7 +543,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             this.setMsgSuccessError(null);
             this.setResultado("solicitudConf");
         } catch (Exception ex) {
-            this.setTitle("Resultado del Chequeo...");
+            this.setTitle("Ups! Algo salió mal...");
             this.setImages("glyphicon glyphicon-remove-circle");
             this.setMsgSuccessError(ex.getMessage());
             this.setResultado("successErrorSolicitudCertificado");
@@ -550,7 +569,7 @@ public class SolicitudCertificadoManagedBean extends UtilManagedBean implements 
             this.setResultado("successErrorSolicitudCertificado");
             this.setMsgSuccessError("La solicitud de certificado ha sido editado con éxito");
         } catch (Exception ex) {
-            this.setTitle("Resultado del Chequeo...");
+            this.setTitle("Ups! Algo salió mal...");
             this.setImages("glyphicon glyphicon-remove-circle");
             this.setMsgSuccessError(ex.getMessage());
             this.setResultado("successErrorSolicitudCertificado");
