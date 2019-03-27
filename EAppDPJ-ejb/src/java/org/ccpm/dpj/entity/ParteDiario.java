@@ -26,7 +26,7 @@ public class ParteDiario implements Serializable {
     private Date fechaPago; //fecha pago info que viene en el archivo del banco
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaDeposito; //fecha deposito banco
-    @ManyToMany(mappedBy = "parteDiario")
+    @OneToMany
     private List<Boleta> boletas;
     private String url;
    

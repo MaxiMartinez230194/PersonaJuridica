@@ -35,20 +35,14 @@ public class Boleta implements Serializable {
     private EstadoBoleta estadoBoleta;
     @OneToMany
     private List<ItemBoleta> items = new ArrayList<ItemBoleta>();
-    @ManyToMany
-    private List<ParteDiario> parteDiario;
+    
     private boolean estado;//borrado lógico
 
     public Boleta() {
     }
 
-    public List<ParteDiario> getParteDiario() {
-        return parteDiario;
-    }
-
-    public void setParteDiario(List<ParteDiario> parteDiario) {
-        this.parteDiario = parteDiario;
-    }
+    
+  
 
     
     

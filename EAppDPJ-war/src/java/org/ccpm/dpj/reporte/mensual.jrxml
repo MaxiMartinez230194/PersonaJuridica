@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2019-02-21T13:24:49 -->
+<!-- 2019-03-25T20:47:21 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mensual" pageWidth="612" pageHeight="1008" columnWidth="499" leftMargin="85" rightMargin="28" topMargin="56" bottomMargin="28" uuid="70ecc80e-8c3b-4e68-8e83-7c89a0b1fc4d">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -40,7 +40,10 @@ from boletas as b
 left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
 left join tasas_servicios as tasa on ite.nombre_tasa=tasa.nombre
-left join partediarios parte on b.partediario_id=parte.id
+
+right join partes_diario_boletas parbo on b.id=parbo.boletas_id
+right join partes_diario parte on parbo.partediario_id = parte.id
+
 where
 b.estadoboleta_id = 3
 and EXTRACT(month from parte.fechadeposito) = $P{mes}
@@ -99,7 +102,7 @@ order by parte.fechadeposito]]>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="5" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Alvear 1282 - Teléfono (376)4447633 - 4447756]]></text>
+				<text><![CDATA[Av. Roque Pérez 2398 - Teléfono (376)4447633 - 4447756]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="77" y="12" width="115" height="9" uuid="08c3c7f8-810f-490c-9fed-97160bf8e72b">

@@ -18,7 +18,6 @@ import javax.persistence.TemporalType;
 import org.ccpm.dpj.entity.Boleta;
 import org.ccpm.dpj.entity.EstadoBoleta;
 import org.ccpm.dpj.entity.ParteDiario;
-import org.ccpm.dpj.entity.SolicitudCertificado;
 
 /**
  *
@@ -34,8 +33,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
     private EstadoBoletaFacadeLocal estadoBoletaFacade;
     @EJB
     private BoletaFacadeLocal boletaFacade;
-    @EJB
-    private SolicitudCertificadoFacadeLocal solicitudFacade;
+    
     
     @Override
     protected EntityManager getEntityManager() {
@@ -73,7 +71,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
     }
     
     @Override
-    public void create(String url, Date fecha, Date fechaPago, Date fechaDeposito) throws Exception {
+    public void create(String url, Date fecha, Date fechaPago, Date fechaDeposito, List<Boleta> boletas) throws Exception {
         try {
             ParteDiario parteDiarioAux = new ParteDiario();
             parteDiarioAux.setUrl(url.toUpperCase());
@@ -81,6 +79,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
             parteDiarioAux.setFechaPago(fechaPago);
             parteDiarioAux.setFechaDeposito(fechaDeposito);
             parteDiarioAux.setEstado(true);
+            parteDiarioAux.setBoletas(boletas);
             this.create(parteDiarioAux);
         } catch (Exception e) {
             throw new Exception("Error al intentar crear el parteDiario");
@@ -127,10 +126,10 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
     
     //cambia el estado de pago de las boletas segun el nro de boleta
     @Override
-    public String registrarPagosBoletas(Long nroBoleta){
+    public String registrarPagosBoletas(Long nroBoleta,Date fechaPago){
        String error="";
        
-       ParteDiario parteDiarioAux = this.find(this.generarUltimoIdParteDiario()-1);
+      
        try {
            EstadoBoleta estadoBoletaAux=estadoBoletaFacade.find(3L);
            //           System.out.println(generarUltimoIdParteDiario());
@@ -141,7 +140,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
            if (boletaAux != null){
                 boletaAux.setEstadoBoleta(estadoBoletaAux);
                // boletaAux.setParteDiario(parteDiarioAux); // edita la boleta con el ultimo partediario creado
-                boletaAux.setFechaPago(parteDiarioAux.getFechaPago());//fecha del ultimo parte diario
+                boletaAux.setFechaPago(fechaPago);//fecha del ultimo parte diario
                 boletaFacade.edit(boletaAux);
                 
            }
@@ -149,7 +148,6 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
             
             return "No se encontró la boleta: "+nroBoleta+"\n";
         }
-       
                
            return error;
                
@@ -193,6 +191,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
     
     
   
+    @Override
     public boolean existeParteDiarioConFechaDeposito(Date fecha){
        Query consulta = em.createQuery("select object(o) from ParteDiario as o where o.fechaDeposito = :p1");
        consulta.setParameter("p1", fecha);
@@ -201,6 +200,16 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
     }
     
     
+    
+    
+    @Override
+    public void setearFechaPagoUltimoParteDiario(Date fechaPago){
+        ParteDiario parteDiarioAux= this.find(this.generarUltimoIdParteDiario());        
+        parteDiarioAux.setFechaPago(fechaPago);
+        this.edit(parteDiarioAux);
+        
+        
+    }
     
     
 }
