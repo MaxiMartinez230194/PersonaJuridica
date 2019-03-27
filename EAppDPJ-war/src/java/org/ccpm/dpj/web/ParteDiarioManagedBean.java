@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.Resource;
@@ -59,7 +57,7 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
     private ParteDiarioFacadeLocal parteDiarioFacade;
     @EJB
     private BoletaFacadeLocal boletaFacade;
-    private List<ParteDiario> ListparteDiario;
+    private List<Boleta> ListparteDiario;
     private ParteDiario parteDiario;
     private Date fechaParteDiario;
     private String adjunto;
@@ -473,14 +471,15 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         this.parteDiarioFacade = parteDiarioFacade;
     }
 
-    public List<ParteDiario> getListparteDiario() {
+    public List<Boleta> getListparteDiario() {
         return ListparteDiario;
     }
 
-    public void setListparteDiario(List<ParteDiario> ListparteDiario) {
+    public void setListparteDiario(List<Boleta> ListparteDiario) {
         this.ListparteDiario = ListparteDiario;
     }
 
+    
     public ParteDiario getParteDiario() {
         return parteDiario;
     }
@@ -541,9 +540,10 @@ public class ParteDiarioManagedBean extends UtilManagedBean implements Serializa
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest myRequest = (HttpServletRequest) context.getExternalContext().getRequest();
         Long idParteDiarioAux = Long.parseLong(myRequest.getParameter("id"));
-        this.setListparteDiario(this.boletaFacade.findAllBoletas(idParteDiarioAux));
+        
        
         this.setParteDiario(this.parteDiarioFacade.find(idParteDiarioAux));
+        this.setListparteDiario(this.getParteDiario().getBoletas());
         //System.out.println("desde partediarioMB list boleta--> "+this.getListparteDiario().size());
     }
 
