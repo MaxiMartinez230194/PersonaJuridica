@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2019-02-21T12:37:54 -->
+<!-- 2019-03-22T20:59:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="actaCargo" pageWidth="612" pageHeight="1008" columnWidth="499" leftMargin="85" rightMargin="28" topMargin="56" bottomMargin="28" uuid="70ecc80e-8c3b-4e68-8e83-7c89a0b1fc4d">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -21,21 +21,24 @@ ite.nombre_tasa as nombre,
 ite.monto,
 b.nro_correlativo as nroBoleta,
 parte.fechadeposito as fechadeposito,
+
 (select sum(ite.monto) from boletas b left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
 where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3) as total,
+
 (select round((sum(ite.monto)*$P{comis})::numeric,2) from boletas b
 left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
-where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3) as comision,
+where b.fecha_pago::timestamp::date =  $P{fecha}   and b.estadoboleta_id = 3) as comision,
+
 (select round((sum(ite.monto)*$P{comis}*0.21)::numeric,2) from boletas b
 left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
-where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3) as ivacomision,
+where b.fecha_pago::timestamp::date =  $P{fecha}   and b.estadoboleta_id = 3) as ivacomision,
 
 (select sum(ite.monto) from boletas b left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
-where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3)-
+where b.fecha_pago::timestamp::date =  $P{fecha}   and b.estadoboleta_id = 3)-
 (select round((sum(ite.monto)*$P{comis})::numeric,2) from boletas b
 left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
@@ -43,15 +46,22 @@ where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3)-
 (select round((sum(ite.monto)*$P{comis}*0.21)::numeric,2) from boletas b
 left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
-where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3) as neto
+where b.fecha_pago::timestamp::date =  $P{fecha}   and b.estadoboleta_id = 3) as neto
 
 from boletas as b
+
+
 left join boletas_items_boletas as bite on b.id=bite.boleta_id
 left join items_boletas as ite on bite.items_id = ite.id
 left join tasas_servicios as tasa on ite.nombre_tasa=tasa.nombre
-left join partediarios parte on b.partediario_id=parte.id
-where b.fecha_pago::timestamp::date =  $P{fecha}  and b.estadoboleta_id = 3
-order by nroBoleta]]>
+
+left join partes_diario_boletas pd on pd.boletas_id=b.id
+left join partes_diario parte on parte.id=pd.partediario_id
+
+
+
+
+where b.fecha_pago=$P{fecha}]]>
 	</queryString>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="monto" class="java.lang.Double"/>

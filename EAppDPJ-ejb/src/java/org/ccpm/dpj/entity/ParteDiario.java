@@ -15,7 +15,7 @@ import javax.persistence.*;
  * @author angel
  */
 @Entity
-@Table(name="partediarios")
+@Table(name="partes_diario")
 public class ParteDiario implements Serializable {   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class ParteDiario implements Serializable {
     private Date fechaPago; //fecha pago info que viene en el archivo del banco
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaDeposito; //fecha deposito banco
-    @OneToMany(mappedBy = "parteDiario")
+    @ManyToMany(mappedBy = "parteDiario")
     private List<Boleta> boletas;
     private String url;
    

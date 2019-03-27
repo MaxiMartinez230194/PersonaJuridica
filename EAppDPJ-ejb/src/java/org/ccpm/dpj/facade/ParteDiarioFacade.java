@@ -140,7 +140,7 @@ public class ParteDiarioFacade extends AbstractFacade<ParteDiario> implements Pa
            
            if (boletaAux != null){
                 boletaAux.setEstadoBoleta(estadoBoletaAux);
-                boletaAux.setParteDiario(parteDiarioAux); // edita la boleta con el ultimo partediario creado
+               // boletaAux.setParteDiario(parteDiarioAux); // edita la boleta con el ultimo partediario creado
                 boletaAux.setFechaPago(parteDiarioAux.getFechaPago());//fecha del ultimo parte diario
                 boletaFacade.edit(boletaAux);
                 
